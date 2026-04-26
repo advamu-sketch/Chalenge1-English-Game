@@ -725,11 +725,43 @@ body {
   font-weight: 800;
 }
 .room-emoji-top {
-  font-size: clamp(.9rem, 2.8vw, 1.3rem);
+  font-size: clamp(1.2rem, 3.8vw, 1.9rem);
   line-height: 1;
   z-index: 3;
   pointer-events: none;
-  margin-bottom: 1px;
+  margin-bottom: 2px;
+}
+/* Kitchen: appliances strip on the left, label centred in remaining space */
+.h-room[data-room="kitchen"] {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0;
+}
+.kitchen-appliances {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px 6px;
+  height: 100%;
+  background: rgba(255,255,255,.45);
+  border-right: 1.5px solid #c8b99a;
+  font-size: clamp(1.3rem, 4vw, 2.1rem);
+  z-index: 3;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+.kitchen-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
 }
 /* Mess items (scattered emojis) */
 .room-mess {
@@ -2344,9 +2376,7 @@ function checkRescueAnswer(animal, card) {
     RS.locked = true;
     card.classList.add('rc-wrong');
     recordRescueError(S.name, RS.pathAnimals[RS.step].word);
-    playHebrew('rescue_wrong.mp3');
-
-    setTimeout(function() {
+    playHebrew('rescue_wrong.mp3', function() {
       var charEl = document.getElementById('rescue-char-img');
       charEl.classList.add('going-back');
       var prevStep = Math.max(0, RS.step - 1);
@@ -2358,8 +2388,8 @@ function checkRescueAnswer(animal, card) {
       setTimeout(function() {
         charEl.classList.remove('going-back');
         rescueRound();
-      }, 1000);
-    }, 800);
+      }, 1200);
+    });
   }
 }
 
@@ -2628,7 +2658,7 @@ var DREAMY_ROOMS = [
   { id:'living',   en:'living room', he:'סלון',        emoji:'📺', mess:['📦','👕','🧦','🎈'],         cx:35,   cy:31.5 },
   { id:'bedroom',  en:'bedroom',     he:'חדר שינה',    emoji:'🛏️', mess:['👗','🧸','👟','🧢'],         cx:85,   cy:44   },
   { id:'kids',     en:'kids room',   he:'חדר ילדים',   emoji:'🧸', mess:['🎮','🖍️','⚽','🪀'],         cx:52.5, cy:57.5 },
-  { id:'dining',   en:'dining room', he:'פינת אוכל',   emoji:'🪑', mess:['🍽️','🥤','🧃','🍞'],         cx:17.5, cy:57.5 },
+  { id:'dining',   en:'dining room', he:'פינת אוכל',   emoji:'🪑🍽️🪑', mess:['🍽️','🥤','🧃','🍞'],  cx:17.5, cy:57.5 },
   { id:'shower',   en:'shower room', he:'מקלחת',       emoji:'🚿', mess:['🧼','🪥','🧴'],              cx:52.5, cy:9    },
   { id:'toilet',   en:'toilet',      he:'שירותים',     emoji:'🚽', mess:['🧻','🧴','🪣'],              cx:85,   cy:9    },
   { id:'balcony',  en:'balcony',     he:'מרפסת',       emoji:'🌿', mess:['👟','📦','🪴','🌂'],         cx:17.5, cy:9    }
@@ -2666,17 +2696,37 @@ function buildHouseMap() {
     /* Room emoji */
     var emojiEl = document.createElement('div');
     emojiEl.className = 'room-emoji-top';
-    emojiEl.textContent = r.emoji;
+    if (r.id === 'dining') {
+      emojiEl.innerHTML = '🪑🍽️🪑<br><span style="font-size:.8em">🪑</span>';
+    } else {
+      emojiEl.textContent = r.emoji;
+    }
 
     /* Room label */
     var label = document.createElement('div');
     label.className = 'room-label';
     label.innerHTML = '<span class="r-en">' + r.en + '</span>' + r.he;
 
-    div.appendChild(messDiv);
-    div.appendChild(cleanMark);
-    div.appendChild(emojiEl);
-    div.appendChild(label);
+    if (r.id === 'kitchen') {
+      /* Kitchen: appliance strip on left + centred content area */
+      var appStrip = document.createElement('div');
+      appStrip.className = 'kitchen-appliances';
+      appStrip.innerHTML = '<span>🧊</span><span>🚰</span><span>🍳</span>';
+
+      var centre = document.createElement('div');
+      centre.className = 'kitchen-center';
+      centre.appendChild(messDiv);
+      centre.appendChild(cleanMark);
+      centre.appendChild(label);
+
+      div.appendChild(appStrip);
+      div.appendChild(centre);
+    } else {
+      div.appendChild(messDiv);
+      div.appendChild(cleanMark);
+      div.appendChild(emojiEl);
+      div.appendChild(label);
+    }
 
     div.onclick = (function(room){ return function(){ checkDreamyAnswer(room); }; })(r);
     map.appendChild(div);
