@@ -1663,44 +1663,30 @@ function pickFemaleVoice(lang) {
   return langVoices[0];
 }
 
-function speakHebrewFallback(text, onDone) {
-  // Google Translate TTS — works on HTTPS when no native Hebrew voice exists
-  var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=he&client=tw-ob&q=' + encodeURIComponent(text);
-  var audio = new Audio(url);
+function playHebrew(file, onDone) {
+  var audio = new Audio('audio/' + file);
   audio.volume = 1;
   if (onDone) {
     var done = false;
-    var safeDone = function() { if (done) return; done = true; setTimeout(onDone, 400); };
-    var safetyMs = Math.max(5000, text.length * 120);
+    var safeDone = function() { if (done) return; done = true; setTimeout(onDone, 300); };
+    var safetyMs = 12000;
     var safetyTimer = setTimeout(safeDone, safetyMs);
     audio.onended = function() { clearTimeout(safetyTimer); safeDone(); };
     audio.onerror = function() { clearTimeout(safetyTimer); safeDone(); };
   }
-  audio.play().catch(function() { if (onDone) setTimeout(onDone, 400); });
+  audio.play().catch(function() { if (onDone) setTimeout(onDone, 300); });
 }
 
 function speak(text, lang, onDone) {
   lang = lang || 'en-US';
-  var isHe = lang.startsWith('he');
 
   if (_voices.length === 0) _voices = window.speechSynthesis.getVoices();
-
-  // Hebrew: check for native voice first; fall back to Google TTS
-  if (isHe) {
-    var nativeVoice = pickFemaleVoice(lang);
-    if (!nativeVoice) {
-      window.speechSynthesis.cancel();
-      speakHebrewFallback(text, onDone);
-      return;
-    }
-  }
-
   window.speechSynthesis.cancel();
 
   setTimeout(function() {
     var u = new SpeechSynthesisUtterance(text);
     u.volume = 1;
-    u.rate   = isHe ? 1.0 : 0.88;
+    u.rate   = 0.88;
     u.pitch  = 1.1;
     u.lang   = lang;
 
@@ -1774,10 +1760,10 @@ function showConfetti() {
 /* ============================================================
    OVERLAY
    ============================================================ */
-function showOverlay(html, speakText) {
+function showOverlay(html, audioFile) {
   document.getElementById('overlay-msg').innerHTML = html;
   document.getElementById('overlay').classList.add('show');
-  if (speakText) speak(speakText, 'he-IL');
+  if (audioFile) playHebrew(audioFile);
 }
 function closeOverlay() {
   document.getElementById('overlay').classList.remove('show');
@@ -1804,8 +1790,9 @@ function selectName(btn, name) {
   document.querySelectorAll('.name-btn').forEach(function(b) { b.classList.remove('sel'); });
   btn.classList.add('sel');
   document.getElementById('char-section').style.display = 'block';
+  var nameToFile = { 'עפרי': 'hello_ofri.mp3', 'יובל': 'hello_yuvall.mp3' };
   setTimeout(function() {
-    speak('שלום ' + name + '! בחרי את הדמות שלך', 'he-IL');
+    playHebrew(nameToFile[name] || 'hello_ofri.mp3');
   }, 400);
 }
 
@@ -1823,7 +1810,7 @@ function selectChar(el, char) {
   document.querySelectorAll('.char-card').forEach(function(c) { c.classList.remove('sel'); });
   el.classList.add('sel');
   document.getElementById('go-btn').style.display = 'inline-block';
-  speak('בחרת את ' + charNames[char] + '! קדימה למשימה!', 'he-IL');
+  playHebrew('char_' + char + '.mp3');
 }
 
 var welcomeMsg = '';
@@ -1906,7 +1893,7 @@ function goToWelcome() {
 }
 
 function speakWelcome() {
-  speak(welcomeMsg, 'he-IL');
+  playHebrew('welcome.mp3');
 }
 
 /* ============================================================
@@ -1929,12 +1916,12 @@ function goToMenu() {
   document.getElementById('menu-player').textContent = '👤 ' + S.name;
   setTimeout(function() {
     if (document.getElementById('s-menu').classList.contains('active'))
-      speak('בחרי משימה, ' + S.name + '!', 'he-IL');
+      playHebrew('menu.mp3');
   }, 400);
 }
 
 function comingSoon(name) {
-  showOverlay('המשחק של <strong>' + name + '</strong><br>יגיע בקרוב! 🚀', 'המשחק יגיע בקרוב!');
+  showOverlay('המשחק של <strong>' + name + '</strong><br>יגיע בקרוב! 🚀', 'coming_soon.mp3');
 }
 
 /* ============================================================
@@ -1945,7 +1932,7 @@ function startAnimals() {
   S.score  = 0;
   S.locked = false;
   updateScore();
-  speak('משחק החיות! שמעי את שם החיה, ואז לחצי על התמונה הנכונה!', 'he-IL', newRound);
+  playHebrew('animals_intro.mp3', newRound);
 }
 
 function newRound() {
@@ -2011,8 +1998,8 @@ function checkAnswer(item, card) {
     /* ---- WRONG ---- */
     card.classList.add('wrong');
     recordError(S.name, S.answer.word);
-    var encouragements = ['נסי שוב!', 'כמעט! נסי שוב.', 'לא זה — את יכולה!'];
-    speak(encouragements[Math.floor(Math.random() * encouragements.length)], 'he-IL');
+    var tryAgainFiles = ['try_again_1.mp3', 'try_again_2.mp3', 'try_again_3.mp3'];
+    playHebrew(tryAgainFiles[Math.floor(Math.random() * tryAgainFiles.length)]);
     setTimeout(function() {
       card.classList.remove('wrong');
       setTimeout(function() {
@@ -2291,8 +2278,7 @@ function startRescue() {
   document.getElementById('rescue-end-overlay').classList.remove('show');
   updateRescueProgress();
 
-  var charHeb = charNames[S.char] || 'הדמות';
-  speak('עזרי ל' + charHeb + ' לחלץ את החיה הלכודה! מצאי את הדמות הנכונה על המפה!', 'he-IL', function() {
+  playHebrew('rescue_intro.mp3', function() {
     rescueRound();
   });
 }
@@ -2358,7 +2344,7 @@ function checkRescueAnswer(animal, card) {
     RS.locked = true;
     card.classList.add('rc-wrong');
     recordRescueError(S.name, RS.pathAnimals[RS.step].word);
-    speak('אוי! צעד אחד אחורה!', 'he-IL');
+    playHebrew('rescue_wrong.mp3');
 
     setTimeout(function() {
       var charEl = document.getElementById('rescue-char-img');
@@ -2398,9 +2384,8 @@ function openRescueCage() {
   showConfetti();
   playApplause();
 
-  var charHeb = charNames[S.char] || 'הדמות';
   setTimeout(function() {
-    speak('כל הכבוד! עזרת ל' + charHeb + ' לחלץ ' + RS.cageAnimal.word + '!', 'he-IL', function() {
+    playHebrew('rescue_win.mp3', function() {
       speak('YOU SAVED THE ' + RS.cageAnimal.word.toUpperCase() + '!', 'en-US', function() {
         showRescueEndOverlay();
       });
@@ -2465,7 +2450,7 @@ function startRiver() {
   var shuffled = ANIMALS.slice().sort(function() { return Math.random() - 0.5; });
   RV.targets = shuffled.slice(0, 4);
 
-  speak('עזרי לחלץ את החיות מהנהר! הן נסחפות! לחצי על החיה שצריך להציל לפני שנעלמת!', 'he-IL', function() {
+  playHebrew('river_intro.mp3', function() {
     riverRound();
   });
 }
@@ -2593,8 +2578,8 @@ function showRiverEnd() {
   document.getElementById('river-end-overlay').classList.add('show');
   // המתן לסיום הפאנפארה לפני הדיבור
   setTimeout(function() {
-    speak('כל הכבוד! הצלת את כל החיות!', 'he-IL', function() {
-      speak('הגשר הושלם!', 'he-IL', function() {
+    playHebrew('river_win1.mp3', function() {
+      playHebrew('river_win2.mp3', function() {
         speak('The bridge is complete! You are amazing!', 'en-US');
       });
     });
@@ -2747,7 +2732,7 @@ function startDreamy() {
   /* Intro then first round */
   setTimeout(function() {
     if (!onDreamyScreen()) return;
-    speak('דרימי השואב הרובוטי התבלבל! עזרי לו לנקות את הבית!', 'he-IL', function() {
+    playHebrew('dreamy_intro.mp3', function() {
       if (!onDreamyScreen()) return;
       dreamyRound();
     });
@@ -2831,7 +2816,7 @@ function showDreamyEnd() {
   document.getElementById('dreamy-end-sub').textContent = S.name + ' ניקתה את כל הבית! 🌟';
   document.getElementById('dreamy-end-overlay').classList.add('show');
   setTimeout(function() {
-    speak('כל הכבוד!', 'he-IL', function() {
+    playHebrew('dreamy_win.mp3', function() {
       speak('The house is clean! Amazing job, ' + S.name + '!', 'en-US');
     });
   }, 1800);
