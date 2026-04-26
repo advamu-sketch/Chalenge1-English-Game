@@ -1,0 +1,2864 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>PAW Patrol — לימוד אנגלית</title>
+<style>
+/* === RESET & BASE === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  min-height: 100vh;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* === SCREENS === */
+.screen { display: none; min-height: 100vh; }
+.screen.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* ==============================
+   SCREEN 1: LOGIN
+   ============================== */
+#s-login {
+  background: linear-gradient(160deg, #0f0c29, #302b63, #24243e);
+}
+.game-title {
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  color: #FFD700;
+  text-shadow: 0 0 22px rgba(255,215,0,0.55);
+  text-align: center;
+  margin-bottom: 6px;
+  letter-spacing: 2px;
+}
+.game-subtitle {
+  color: #87CEEB;
+  font-size: 1.05rem;
+  text-align: center;
+  margin-bottom: 26px;
+}
+.name-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 26px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.name-btn {
+  padding: 13px 34px;
+  font-size: 1.55rem;
+  font-weight: bold;
+  border: 3px solid transparent;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+.name-btn:nth-child(1) { background: linear-gradient(135deg,#FF6B9D,#FF8E53); color: #fff; }
+.name-btn:nth-child(2) { background: linear-gradient(135deg,#56CFE1,#A8E6CF); color: #333; }
+.name-btn:hover, .name-btn.sel {
+  transform: scale(1.09);
+  box-shadow: 0 0 24px gold;
+  border-color: gold;
+}
+#char-section { display: none; text-align: center; }
+.section-label { color: #FFD700; font-size: 1.15rem; margin-bottom: 14px; }
+.chars-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+.char-card {
+  background: rgba(255,255,255,0.09);
+  border: 3px solid transparent;
+  border-radius: 16px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all .2s;
+  text-align: center;
+  width: 108px;
+}
+.char-card:hover { background: rgba(255,255,255,0.18); transform: scale(1.06); }
+.char-card.sel {
+  border-color: #FFD700;
+  background: rgba(255,215,0,0.18);
+  box-shadow: 0 0 18px gold;
+}
+.char-card img {
+  width: 78px; height: 78px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+.char-card .cname { color: #fff; font-size: .8rem; font-weight: bold; margin-top: 6px; }
+#go-btn {
+  display: none;
+  padding: 13px 46px;
+  font-size: 1.35rem;
+  font-weight: bold;
+  background: linear-gradient(135deg,#FFD700,#FFA500);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  color: #333;
+  box-shadow: 0 6px 20px rgba(255,165,0,0.5);
+  transition: transform .15s;
+}
+#go-btn:hover { transform: scale(1.06); }
+
+/* ==============================
+   SCREEN 2: WELCOME
+   ============================== */
+#s-welcome {
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  text-align: center;
+}
+.ryder-wrap img {
+  width: 175px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,0.4));
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-14px); }
+}
+@keyframes barkJump {
+  0%,100% { transform: translateY(0) scale(1); }
+  25%     { transform: translateY(-30px) scale(1.1) rotate(-5deg); }
+  75%     { transform: translateY(-15px) scale(1.05) rotate(5deg); }
+}
+.barking {
+  animation: barkJump 0.3s ease-in-out infinite !important;
+}
+.bubble {
+  background: #fff;
+  border-radius: 22px;
+  padding: 16px 26px;
+  margin: 14px auto;
+  max-width: 370px;
+  font-size: 1.12rem;
+  color: #333;
+  line-height: 1.5;
+  box-shadow: 0 6px 22px rgba(0,0,0,0.2);
+  position: relative;
+  cursor: pointer;
+  transition: transform .15s;
+}
+.bubble:hover { transform: scale(1.02); }
+.speak-btn {
+  width: 70px; height: 70px;
+  background: linear-gradient(135deg,#FFD700,#FFA500);
+  border: none;
+  border-radius: 50%;
+  font-size: 2rem;
+  cursor: pointer;
+  box-shadow: 0 5px 18px rgba(255,165,0,0.5);
+  transition: transform .15s;
+  margin: 6px auto 0;
+  display: block;
+  animation: pulse-btn 2s ease-in-out infinite;
+}
+.speak-btn:hover { transform: scale(1.12); }
+@keyframes pulse-btn {
+  0%,100% { box-shadow: 0 5px 18px rgba(255,165,0,0.5); }
+  50%      { box-shadow: 0 5px 30px rgba(255,165,0,0.9); }
+}
+.bubble::after {
+  content: '';
+  position: absolute;
+  top: -15px; left: 50%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-bottom-color: #fff;
+}
+.btn-main {
+  padding: 13px 40px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background: linear-gradient(135deg,#FFD700,#FFA500);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  color: #333;
+  box-shadow: 0 5px 15px rgba(255,165,0,0.4);
+  transition: transform .15s;
+  margin-top: 10px;
+}
+.btn-main:hover { transform: scale(1.05); }
+
+/* ==============================
+   SCREEN 3: MENU
+   ============================== */
+#s-menu {
+  background: linear-gradient(135deg,#f093fb,#f5576c,#fda085);
+}
+.menu-title {
+  color: #fff;
+  font-size: 1.75rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 6px;
+  text-shadow: 1px 2px 5px rgba(0,0,0,0.25);
+}
+.menu-player {
+  color: #FFD700;
+  font-size: 1.1rem;
+  text-align: center;
+  margin-bottom: 22px;
+  font-weight: bold;
+}
+.menu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 490px;
+  width: 100%;
+}
+.menu-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 18px 12px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.18);
+  transition: transform .2s, box-shadow .2s;
+  position: relative;
+}
+.menu-card:not(.locked):hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+.menu-card.locked { opacity: .55; cursor: not-allowed; }
+.menu-card img {
+  width: 88px; height: 88px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+.menu-card-title { font-size: 1rem; font-weight: bold; color: #333; margin-top: 8px; }
+.dreamy-menu-icon {
+  width: 88px; height: 88px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0px;
+}
+.dreamy-menu-icon .dm-house { font-size: 3rem; line-height: 1; display: block; }
+.dreamy-menu-icon .dm-bot   { font-size: 1.9rem; line-height: 1; display: block; margin-top: -4px; }
+.lock-badge { position: absolute; top: 8px; right: 10px; font-size: 1.2rem; }
+
+/* ==============================
+   SCREEN 5: RESCUE GAME
+   ============================== */
+#s-rescue {
+  background: linear-gradient(160deg,#1a3a0a,#2d6e1a,#4a9e2f);
+  padding: 10px 12px;
+  gap: 8px;
+  justify-content: flex-start;
+}
+.rescue-topbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rescue-title-bar {
+  flex: 1;
+  font-size: clamp(0.85rem,2.5vw,1.05rem);
+  color: #FFD700;
+  font-weight: bold;
+  text-shadow: 0 2px 6px rgba(0,0,0,.5);
+  text-align: center;
+}
+.rescue-bubble {
+  background: rgba(255,255,255,.93);
+  border-radius: 18px;
+  padding: 9px 18px;
+  font-size: clamp(1rem,3.5vw,1.25rem);
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,.22);
+  cursor: pointer;
+  max-width: 500px;
+  width: 94%;
+}
+/* MAP */
+.rescue-map-wrap { width: 100%; max-width: 680px; }
+.rescue-map {
+  position: relative;
+  width: 100%;
+  height: clamp(230px, 48vh, 310px);
+  background:
+    radial-gradient(ellipse 60% 50% at 30% 20%, #5bb3e8 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 80% 15%, #4aa8d8 0%, transparent 60%),
+    linear-gradient(180deg, #3a8bbf 0%, #3a8bbf 30%, #2d7a50 30%, #1e5c38 100%);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 6px 28px rgba(0,0,0,.35);
+}
+/* SVG winding path */
+.rescue-path-svg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+/* Moving character */
+.rescue-char-img {
+  position: absolute;
+  width: 52px; height: 52px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  transition: left 0.75s cubic-bezier(.4,0,.2,1),
+              top  0.75s cubic-bezier(.4,0,.2,1);
+  z-index: 10;
+  filter: drop-shadow(2px 3px 5px rgba(0,0,0,.45));
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+}
+.rescue-char-img.going-back {
+  transition: left 1.1s ease-in, top 1.1s ease-in;
+}
+/* Scattered animal cards */
+.rescue-card {
+  position: absolute;
+  width: 64px; height: 70px;
+  background: rgba(255,255,255,.94);
+  border-radius: 14px;
+  border: 3px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(0,0,0,.28);
+  z-index: 5;
+  transform: translate(-50%,-50%);
+  transition: border-color .15s, background .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.rescue-card:active { transform: translate(-50%,-50%) scale(.88); }
+.rescue-card .rc-emoji { font-size: 1.75rem; line-height: 1.1; }
+.rescue-card .rc-word  { font-size: 0.5rem; font-weight: bold; color: #555; text-transform: uppercase; }
+.rescue-card.rc-correct {
+  background: #d4f4dd;
+  border-color: #4caf50;
+  box-shadow: 0 0 18px rgba(76,175,80,.65);
+  transform: translate(-50%,-50%) scale(1.12);
+}
+.rescue-card.rc-wrong {
+  animation: rc-shake .42s ease;
+  border-color: #e74c3c;
+  background: #fdecea;
+}
+@keyframes rc-shake {
+  0%,100% { transform: translate(-50%,-50%); }
+  22%     { transform: translate(calc(-50% - 9px),-50%); }
+  66%     { transform: translate(calc(-50% + 9px),-50%); }
+}
+/* Cage */
+.rescue-cage {
+  position: absolute;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%,-50%);
+}
+.cage-animal-wrap {
+  font-size: 1.85rem;
+  min-height: 32px;
+  display: flex; align-items: center; justify-content: center;
+}
+.cage-lock-icon { font-size: 1rem; margin-bottom: 1px; }
+.cage-bars-wrap {
+  display: flex;
+  gap: 6px;
+  align-items: stretch;
+  width: 56px; height: 38px;
+  border: 3px solid #8B4513;
+  border-radius: 0 0 8px 8px;
+  padding: 2px 3px;
+  background: rgba(0,0,0,.1);
+  box-sizing: border-box;
+  overflow: visible;
+}
+.cage-bar {
+  flex: 1;
+  background: linear-gradient(to bottom,#a0522d,#8B4513);
+  border-radius: 2px;
+  transform-origin: top center;
+}
+@keyframes bar-fly-l { to { transform: translateX(-55px) translateY(-15px) rotate(-35deg); opacity:0; } }
+@keyframes bar-fly-r { to { transform: translateX( 55px) translateY(-15px) rotate( 35deg); opacity:0; } }
+.rescue-cage.open .cage-bar:nth-child(1) { animation: bar-fly-l .55s ease-out .05s forwards; }
+.rescue-cage.open .cage-bar:nth-child(2) { animation: bar-fly-l .55s ease-out .18s forwards; }
+.rescue-cage.open .cage-bar:nth-child(3) { animation: bar-fly-r .55s ease-out .05s forwards; }
+.rescue-cage.open .cage-bar:nth-child(4) { animation: bar-fly-r .55s ease-out .18s forwards; }
+@keyframes animal-pop {
+  0%   { transform: scale(0) translateY(10px); opacity:0; }
+  65%  { transform: scale(1.35) translateY(-4px); }
+  100% { transform: scale(1) translateY(0); opacity:1; }
+}
+.rescue-cage.open .cage-animal-wrap { animation: animal-pop .6s ease-out .4s both; }
+/* Progress footprints */
+.rescue-progress {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+.rp-paw {
+  font-size: 1.4rem;
+  opacity: 0.28;
+  transition: opacity .3s, transform .3s;
+}
+.rp-paw.done { opacity: 1; transform: scale(1.25); }
+/* Rescue end overlay */
+#rescue-end-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.6);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+#rescue-end-overlay.show { display: flex; }
+.rescue-end-box {
+  background: linear-gradient(135deg,#fff9e6,#fff3cd);
+  border-radius: 28px;
+  padding: 32px 28px;
+  text-align: center;
+  max-width: 340px;
+  width: 90%;
+  box-shadow: 0 12px 45px rgba(0,0,0,.4);
+}
+.rescue-end-emoji { font-size: 4rem; margin-bottom: 8px; }
+.rescue-end-title { font-size: 2rem; font-weight: 900; color: #2d6e1a; margin-bottom: 6px; }
+.rescue-end-sub { font-size: 1.1rem; color: #555; margin-bottom: 20px; }
+.rescue-end-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.rescue-end-btns button {
+  padding: 12px 24px;
+  font-size: 1.05rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  background: linear-gradient(135deg,#4caf50,#2d9e2d);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,.2);
+}
+.rescue-end-btns button:last-child {
+  background: linear-gradient(135deg,#2196f3,#1565c0);
+}
+
+/* ==============================
+   SCREEN 6: RIVER RESCUE
+   ============================== */
+#s-river {
+  background: linear-gradient(160deg,#1a3a6e,#1565c0,#0d47a1);
+  padding: 10px 12px;
+  gap: 8px;
+  justify-content: flex-start;
+}
+/* River area */
+.river-wrap {
+  width: 100%; max-width: 680px;
+  position: relative;
+  height: clamp(190px, 42vh, 270px);
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(180deg,
+    #2e7d32 0%, #2e7d32 12%,
+    #0d47a1 12%, #1976d2 50%,
+    #0d47a1 88%, #2e7d32 88%, #2e7d32 100%);
+  box-shadow: 0 6px 28px rgba(0,0,0,.4);
+}
+/* Animated water */
+.river-water {
+  position: absolute;
+  left: 0; right: 0;
+  top: 12%; height: 76%;
+  pointer-events: none;
+  overflow: hidden;
+}
+.river-water::before, .river-water::after {
+  content: '〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜';
+  position: absolute; left: 0;
+  font-size: 1.1rem;
+  color: rgba(255,255,255,.2);
+  white-space: nowrap;
+  animation: river-flow 2.5s linear infinite;
+}
+.river-water::before { top: 20%; }
+.river-water::after  { top: 62%; animation-duration: 3.5s; animation-direction: reverse; }
+@keyframes river-flow {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-40%); }
+}
+/* Animal cards floating on river */
+@keyframes sweep-left {
+  from { left: 110%; }
+  to   { left: -18%; }
+}
+.river-card {
+  position: absolute;
+  width: 64px; height: 70px;
+  background: rgba(255,255,255,.94);
+  border-radius: 14px;
+  border: 3px solid #90caf9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(0,0,0,.3);
+  z-index: 5;
+  animation: sweep-left linear forwards;
+  -webkit-tap-highlight-color: transparent;
+  transform: translateY(-50%);
+}
+.river-card .rc-emoji { font-size: 1.75rem; line-height: 1.1; }
+.river-card .rc-word  { font-size: 0.5rem; font-weight: bold; color: #555; text-transform: uppercase; }
+.river-card.rv-target {
+  border-color: #ff9800;
+  box-shadow: 0 0 14px rgba(255,152,0,.7);
+}
+.river-card.rv-correct {
+  background: #d4f4dd; border-color: #4caf50;
+  animation: none !important;
+  box-shadow: 0 0 18px rgba(76,175,80,.7);
+}
+.river-card.rv-wrong {
+  border-color: #e74c3c; background: #fdecea;
+}
+/* Bridge */
+.bridge-section {
+  width: 100%; max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.bridge-label {
+  color: #90caf9;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-shadow: 0 1px 4px rgba(0,0,0,.5);
+}
+.bridge-planks {
+  display: flex;
+  gap: 5px;
+}
+.bridge-plank {
+  width: 54px; height: 20px;
+  background: rgba(255,255,255,.12);
+  border: 2px dashed rgba(255,255,255,.25);
+  border-radius: 4px;
+  transition: background .4s, border .4s, box-shadow .4s;
+}
+@keyframes plank-pop {
+  0%   { transform: scaleY(0) translateY(-10px); opacity: 0; }
+  70%  { transform: scaleY(1.15) translateY(1px); }
+  100% { transform: scaleY(1); opacity: 1; }
+}
+.bridge-plank.built {
+  background: linear-gradient(180deg,#a0522d,#6b3318);
+  border: 2px solid #4a2010;
+  box-shadow: 0 3px 8px rgba(0,0,0,.4);
+  animation: plank-pop .4s ease-out;
+}
+/* River end overlay reuses rescue-end-box */
+#river-end-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.6);
+  display: none; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 200;
+}
+#river-end-overlay.show { display: flex; }
+
+/* ============================================================
+   SCREEN 7 — DREAMY ROBOT CLEANER
+   ============================================================ */
+#s-dreamy {
+  background: linear-gradient(150deg, #ede7f6 0%, #e8f5e9 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  overflow: hidden;
+}
+.dreamy-topbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  background: rgba(255,255,255,.88);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  z-index: 5;
+}
+.dreamy-title-bar {
+  font-size: .95rem;
+  font-weight: 800;
+  color: #4a148c;
+  flex: 1;
+  text-align: center;
+}
+.dreamy-bubble {
+  margin: 5px auto 2px;
+  background: rgba(255,255,255,.93);
+  border: 2px solid #7b1fa2;
+  border-radius: 18px;
+  padding: 6px 18px;
+  font-size: .9rem;
+  font-weight: 700;
+  color: #4a148c;
+  cursor: pointer;
+  max-width: 92%;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(123,31,162,.2);
+  user-select: none;
+  flex-shrink: 0;
+  direction: ltr;
+}
+.dreamy-progress {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  margin: 3px auto 2px;
+  flex-shrink: 0;
+}
+.dreamy-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #ce93d8;
+  transition: background .35s;
+}
+.dreamy-dot.done { background: #4a148c; }
+/* House wrap fills remaining vertical space */
+.house-wrap {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: 430px;
+  padding: 4px 10px 6px;
+  box-sizing: border-box;
+  display: flex;
+}
+/* House map — CSS Grid floor plan */
+.house-map {
+  position: relative;
+  flex: 1;
+  display: grid;
+  grid-template-areas:
+    "balcony shower  toilet"
+    "living  living  bedroom"
+    "dining  kids    bedroom"
+    "kitchen kitchen kitchen";
+  grid-template-rows: 1.8fr 2.7fr 2.5fr 3fr;
+  grid-template-columns: 35% 35% 30%;
+  border: 3px solid #5d4037;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+/* Room cells */
+.h-room {
+  position: relative;
+  border: 1.5px solid #a1887f;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .5s;
+}
+.h-room:active { filter: brightness(.92); }
+/* Room colours (messy state) */
+.h-room[data-room="balcony"]  { grid-area: balcony;  background: #e3f2fd; }
+.h-room[data-room="shower"]   { grid-area: shower;   background: #e0f7fa; }
+.h-room[data-room="toilet"]   { grid-area: toilet;   background: #e0f2f1; }
+.h-room[data-room="living"]   { grid-area: living;   background: #fff8e1; }
+.h-room[data-room="bedroom"]  { grid-area: bedroom;  background: #fce4ec; }
+.h-room[data-room="dining"]   { grid-area: dining;   background: #fff3e0; }
+.h-room[data-room="kids"]     { grid-area: kids;     background: #f3e5f5; }
+.h-room[data-room="kitchen"]  { grid-area: kitchen;  background: #f9fbe7; }
+/* Clean state */
+.h-room.room-clean { background: #e8f5e9 !important; }
+.h-room.room-clean .room-mess  { opacity: 0 !important; }
+.h-room.room-clean .room-clean-mark { display: flex !important; }
+/* Room label */
+.room-label {
+  font-size: clamp(.42rem, 1.4vw, .62rem);
+  font-weight: 700;
+  color: #4e342e;
+  text-align: center;
+  line-height: 1.25;
+  z-index: 3;
+  pointer-events: none;
+}
+.room-label .r-en {
+  display: block;
+  font-size: clamp(.5rem, 1.6vw, .72rem);
+  color: #1a237e;
+  font-weight: 800;
+}
+.room-emoji-top {
+  font-size: clamp(.9rem, 2.8vw, 1.3rem);
+  line-height: 1;
+  z-index: 3;
+  pointer-events: none;
+  margin-bottom: 1px;
+}
+/* Mess items (scattered emojis) */
+.room-mess {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-around;
+  padding: 2px;
+  font-size: clamp(.55rem, 1.8vw, .85rem);
+  opacity: .55;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity .5s;
+}
+/* Clean sparkle */
+.room-clean-mark {
+  display: none;
+  position: absolute;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  z-index: 4;
+  pointer-events: none;
+}
+/* Dreamy robot */
+.dreamy-bot {
+  position: absolute;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ce93d8, #4a148c);
+  border: 3px solid #fff;
+  box-shadow: 0 4px 14px rgba(74,20,140,.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  z-index: 10;
+  transform: translate(-50%, -50%);
+  transition: left 1.1s cubic-bezier(.4,0,.2,1), top 1.1s cubic-bezier(.4,0,.2,1);
+  pointer-events: none;
+}
+.dreamy-bot.spinning {
+  animation: dreamy-spin 1s linear infinite;
+}
+@keyframes dreamy-spin {
+  from { transform: translate(-50%,-50%) rotate(0deg); }
+  to   { transform: translate(-50%,-50%) rotate(360deg); }
+}
+/* Dreamy end overlay */
+#dreamy-end-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.6);
+  display: none; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 200;
+}
+#dreamy-end-overlay.show { display: flex; }
+
+/* ==============================
+   SCREEN 4: ANIMALS GAME
+   ============================== */
+#s-animals {
+  background: linear-gradient(135deg,#a8edea,#fed6e3);
+}
+.game-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 640px;
+  margin-bottom: 8px;
+}
+.back-btn {
+  padding: 9px 20px;
+  background: rgba(255,255,255,0.85);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: .95rem;
+  font-weight: bold;
+  transition: transform .15s;
+}
+.back-btn:hover { transform: scale(1.05); }
+.score-box {
+  background: #fff;
+  border-radius: 20px;
+  padding: 9px 20px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.game-char {
+  width: 115px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+.q-bubble {
+  background: #fff;
+  border-radius: 24px;
+  padding: 14px 26px;
+  font-size: 1.35rem;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  box-shadow: 0 5px 18px rgba(0,0,0,0.12);
+  margin: 8px 0;
+  cursor: pointer;
+  transition: transform .15s;
+  direction: rtl;
+}
+.q-bubble:hover { transform: scale(1.02); }
+.q-word { color: #e91e63; font-size: 1.85rem; }
+.q-hint { display: block; font-size: .72rem; color: #aaa; margin-top: 4px; font-weight: normal; }
+.action-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 4px 0;
+}
+.demo-btn {
+  padding: 10px 22px;
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  border: none;
+  border-radius: 24px;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform .15s;
+}
+.demo-btn:hover { transform: scale(1.06); }
+.help-btn-game {
+  width: 42px; height: 42px;
+  background: #FF6B9D;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  transition: transform .15s;
+}
+.help-btn-game:hover { transform: scale(1.1); }
+.cards-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.a-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 18px 14px;
+  cursor: pointer;
+  text-align: center;
+  width: 155px;
+  box-shadow: 0 5px 18px rgba(0,0,0,0.12);
+  border: 4px solid transparent;
+  transition: transform .2s, box-shadow .2s;
+}
+.a-card:hover { transform: translateY(-7px); box-shadow: 0 10px 28px rgba(0,0,0,0.2); }
+.a-emoji { font-size: 4.5rem; display: block; line-height: 1; }
+.a-card.correct {
+  border-color: #4CAF50;
+  background: #E8F5E9;
+  animation: cardPulse .45s ease;
+}
+.a-card.wrong {
+  border-color: #f44336;
+  background: #FFEBEE;
+  animation: cardShake .45s ease;
+}
+@keyframes cardPulse {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.13); }
+}
+@keyframes cardShake {
+  0%,100%  { transform: translateX(0); }
+  25%      { transform: translateX(-12px); }
+  75%      { transform: translateX(12px); }
+}
+
+/* ==============================
+   CONFETTI
+   ============================== */
+#confetti {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 999;
+}
+.cp {
+  position: absolute;
+  top: -12px;
+  animation: fall linear forwards;
+}
+@keyframes fall {
+  to { transform: translateY(108vh) rotate(740deg); opacity: 0; }
+}
+
+/* ==============================
+   OVERLAY
+   ============================== */
+#overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 900;
+  align-items: center;
+  justify-content: center;
+}
+#overlay.show { display: flex; }
+.overlay-box {
+  background: #fff;
+  border-radius: 24px;
+  padding: 28px 38px;
+  max-width: 320px;
+  text-align: center;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  animation: popIn .25s ease;
+  direction: rtl;
+}
+@keyframes popIn {
+  from { transform: scale(.6); opacity: 0; }
+  to   { transform: scale(1);  opacity: 1; }
+}
+.overlay-box .ok-btn {
+  margin-top: 18px;
+  padding: 10px 32px;
+  background: #e91e63;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform .15s;
+}
+.overlay-box .ok-btn:hover { transform: scale(1.05); }
+
+/* ==============================
+   PARENTS BUTTON
+   ============================== */
+.parents-btn {
+  padding: 10px 28px;
+  background: rgba(255,255,255,0.25);
+  border: 2px solid rgba(255,255,255,0.6);
+  border-radius: 30px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all .2s;
+  backdrop-filter: blur(4px);
+}
+.parents-btn:hover {
+  background: rgba(255,255,255,0.4);
+  transform: scale(1.05);
+}
+
+/* ==============================
+   PARENTS OVERLAY
+   ============================== */
+#parents-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 980;
+  align-items: center;
+  justify-content: center;
+  direction: rtl;
+}
+#parents-overlay.show { display: flex; }
+
+.parents-box {
+  background: #fff;
+  border-radius: 24px;
+  width: 90%;
+  max-width: 480px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.35);
+  animation: popIn .28s ease;
+}
+.parents-header {
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.parents-icon { font-size: 2.2rem; }
+.parents-header h2 {
+  color: #fff;
+  font-size: 1.5rem;
+  margin: 0;
+}
+.parents-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 14px 20px 0;
+  border-bottom: 2px solid #eee;
+}
+.tab-btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 20px 20px 0 0;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  background: #eee;
+  color: #666;
+  transition: all .15s;
+}
+.tab-btn.active {
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  color: #fff;
+}
+.parents-table-wrap {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+}
+#parents-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+#parents-table th {
+  background: #f5f5f5;
+  padding: 10px 12px;
+  text-align: right;
+  font-weight: bold;
+  color: #555;
+  border-bottom: 2px solid #ddd;
+}
+#parents-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+#parents-table tr:last-child td { border-bottom: none; }
+#parents-table tr:hover td { background: #fafafa; }
+.err-count {
+  display: inline-block;
+  background: #ff5252;
+  color: #fff;
+  border-radius: 20px;
+  padding: 3px 12px;
+  font-weight: bold;
+  font-size: .95rem;
+  min-width: 36px;
+  text-align: center;
+}
+.err-count.low  { background: #ff9800; }
+.err-count.high { background: #f44336; }
+.parents-actions {
+  padding: 14px 20px;
+  border-top: 2px solid #eee;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.clear-btn {
+  padding: 10px 22px;
+  background: #ff5252;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: .95rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform .15s;
+}
+.clear-btn:hover { transform: scale(1.05); }
+.close-parents-btn {
+  padding: 10px 22px;
+  background: #eee;
+  color: #555;
+  border: none;
+  border-radius: 20px;
+  font-size: .95rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform .15s;
+}
+.close-parents-btn:hover { transform: scale(1.05); }
+
+/* ==============================
+   END GAME OVERLAY
+   ============================== */
+#end-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 950;
+  align-items: center;
+  justify-content: center;
+}
+#end-overlay.show { display: flex; }
+.end-box {
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  border-radius: 30px;
+  padding: 30px 40px;
+  text-align: center;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+  animation: popIn .35s ease;
+  max-width: 340px;
+  width: 90%;
+}
+.end-ryder {
+  width: 130px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  animation: float 2s ease-in-out infinite;
+}
+.end-stars {
+  font-size: 2rem;
+  margin: 8px 0;
+  letter-spacing: 4px;
+  animation: starPop .6s ease .2s both;
+}
+@keyframes starPop {
+  0%   { transform: scale(0); opacity: 0; }
+  70%  { transform: scale(1.3); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.end-title {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: #FFD700;
+  text-shadow: 0 3px 10px rgba(0,0,0,0.3);
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+.end-sub {
+  color: #fff;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  direction: rtl;
+}
+.end-btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+.end-btns button {
+  padding: 12px 28px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  background: #FFD700;
+  color: #333;
+  transition: transform .15s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.end-btns button:hover { transform: scale(1.08); }
+
+/* ==============================
+   RESPONSIVE
+   ============================== */
+@media (max-width: 480px) {
+  .a-card { width: 130px; padding: 14px 10px; }
+  .a-emoji { font-size: 3.6rem; }
+  .menu-grid { gap: 10px; }
+  .chars-row { gap: 8px; }
+  .char-card { width: 96px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================
+     SCREEN 1: LOGIN
+     ============================ -->
+<div id="s-login" class="screen active">
+  <div class="game-title">🐾 יחידת הצלה 🐾</div>
+  <div class="game-subtitle">לימוד אנגלית עם PAW Patrol</div>
+
+  <div class="name-row">
+    <button class="name-btn" onclick="selectName(this,'עפרי')">עפרי</button>
+    <button class="name-btn" onclick="selectName(this,'יובל')">יובל</button>
+  </div>
+
+  <div id="char-section">
+    <div class="section-label">בחרי את הדמות שלך:</div>
+    <div class="chars-row">
+      <div class="char-card" onclick="selectChar(this,'marshall')">
+        <img src="Marchell.png" alt="Marshall">
+        <div class="cname">Marshall</div>
+      </div>
+      <div class="char-card" onclick="selectChar(this,'rocky')">
+        <img src="Rocky.png" alt="Rocky">
+        <div class="cname">Rocky</div>
+      </div>
+      <div class="char-card" onclick="selectChar(this,'rubble')">
+        <img src="Rubbel.png" alt="Rubble">
+        <div class="cname">Rubble</div>
+      </div>
+      <div class="char-card" onclick="selectChar(this,'skye')">
+        <img src="Sky.png" alt="Skye">
+        <div class="cname">Skye</div>
+      </div>
+      <div class="char-card" onclick="selectChar(this,'chase')">
+        <img src="Chase.png" alt="Chase">
+        <div class="cname">Chase</div>
+      </div>
+      <div class="char-card" onclick="selectChar(this,'zuma')">
+        <img src="Zuma.png" alt="Zuma">
+        <div class="cname">Zuma</div>
+      </div>
+    </div>
+    <button id="go-btn" onclick="goToWelcome()">קדימה למשימה! 🚀</button>
+  </div>
+</div>
+
+<!-- ============================
+     SCREEN 2: WELCOME (RYDER)
+     ============================ -->
+<div id="s-welcome" class="screen">
+  <div style="display:flex; align-items:flex-end; justify-content:center; gap:10px;">
+    <img id="welcome-char-img" src="" alt="" style="width:130px; object-fit:contain; mix-blend-mode:multiply; filter:drop-shadow(0 6px 14px rgba(0,0,0,0.3));">
+    <div class="ryder-wrap">
+      <img src="Ryder.png" alt="Ryder">
+    </div>
+  </div>
+  <div class="bubble" id="welcome-text" onclick="speakWelcome()">...</div>
+  <button class="speak-btn" onclick="speakWelcome()" title="לחצי לשמוע">🔊</button>
+  <button class="btn-main" onclick="goToMenu()" style="margin-top:14px;">בחרי משימה! 🎮</button>
+</div>
+
+<!-- ============================
+     SCREEN 3: MENU
+     ============================ -->
+<div id="s-menu" class="screen">
+  <div style="width:100%;max-width:490px;display:flex;justify-content:flex-start;margin-bottom:4px;">
+    <button class="back-btn" onclick="goToLogin()">← החלפת משתמש</button>
+  </div>
+  <div class="menu-title">בחרי משימה!</div>
+  <div class="menu-player" id="menu-player">👤</div>
+  <div class="menu-grid">
+
+    <!-- ANIMALS — active -->
+    <div class="menu-card" onclick="startAnimals()">
+      <img src="Marchell.png" alt="Marshall">
+      <div class="menu-card-title">🐾 חיות</div>
+    </div>
+
+    <!-- RESCUE — active -->
+    <div class="menu-card" onclick="startRescue()">
+      <img src="Ryder.png" alt="Ryder">
+      <div class="menu-card-title">🔒 הצלת חיה</div>
+    </div>
+
+    <!-- RIVER RESCUE — active -->
+    <div class="menu-card" onclick="startRiver()">
+      <img src="Sky.png" alt="Skye">
+      <div class="menu-card-title">🌊 נהר</div>
+    </div>
+
+    <!-- DREAMY — active -->
+    <div class="menu-card" onclick="startDreamy()">
+      <div class="dreamy-menu-icon">
+        <span class="dm-house">🏠</span>
+        <span class="dm-bot">🤖</span>
+      </div>
+      <div class="menu-card-title">🤖 דרימי</div>
+    </div>
+
+    <!-- PARENTS BUTTON -->
+    <div style="grid-column:1/-1; text-align:center; margin-top:8px;">
+      <button class="parents-btn" onclick="showParents()">👨‍👩‍👧 דוח הורים</button>
+    </div>
+
+    <!-- VERBS — locked -->
+    <div class="menu-card locked" onclick="comingSoon('פעלים')">
+      <span class="lock-badge">🔒</span>
+      <img src="Sky.png" alt="Skye">
+      <div class="menu-card-title">🏃 פעלים</div>
+    </div>
+
+    <!-- BODY PARTS — locked -->
+    <div class="menu-card locked" onclick="comingSoon('חלקי גוף')">
+      <span class="lock-badge">🔒</span>
+      <img src="Rocky.png" alt="Rocky">
+      <div class="menu-card-title">👤 חלקי גוף</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================
+     SCREEN 4: ANIMALS GAME
+     ============================ -->
+<div id="s-animals" class="screen">
+  <div class="game-topbar">
+    <button class="back-btn" onclick="goToMenu()">← חזרה</button>
+    <div class="score-box">⭐ <span id="score-num">0</span></div>
+  </div>
+
+  <img src="Marchell.png" alt="Marshall" class="game-char">
+
+  <div class="q-bubble" onclick="repeatQ()">
+    מצאי את:&nbsp;<span class="q-word" id="q-word">?</span>
+    <span class="q-hint">לחצי לשמוע שוב 🔊</span>
+  </div>
+
+  <div class="action-row">
+    <button class="demo-btn" onclick="doDemo()">♪ הדגמה</button>
+    <button class="help-btn-game" onclick="showHelp()" title="עזרה">?</button>
+  </div>
+
+  <div class="cards-row" id="cards-row"></div>
+</div>
+
+<!-- ============================
+     SCREEN 5: RESCUE GAME
+     ============================ -->
+<div id="s-rescue" class="screen">
+  <div class="rescue-topbar">
+    <button class="back-btn" onclick="goToMenu()">← חזרה</button>
+    <div class="rescue-title-bar">🗺️ הצלת החיה הלכודה</div>
+  </div>
+
+  <div class="rescue-bubble" id="rescue-bubble" onclick="repeatRescueQ()">
+    <span id="rescue-bubble-text">...</span>
+    <span style="font-size:.75rem;opacity:.55"> 🔊</span>
+  </div>
+
+  <div class="rescue-map-wrap">
+    <div class="rescue-map" id="rescue-map">
+
+      <!-- SVG winding path -->
+      <svg class="rescue-path-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <!-- Shadow -->
+        <path d="M 5,78 C 10,58 17,25 22,22 C 28,18 42,70 48,67 C 54,64 68,22 72,20 C 77,17 85,60 91,63"
+              stroke="#704010" stroke-width="5.5" fill="none" stroke-linecap="round" opacity=".3"/>
+        <!-- Dirt road -->
+        <path d="M 5,78 C 10,58 17,25 22,22 C 28,18 42,70 48,67 C 54,64 68,22 72,20 C 77,17 85,60 91,63"
+              stroke="#c4a35a" stroke-width="3.8" fill="none" stroke-linecap="round"
+              stroke-dasharray="4,3"/>
+        <!-- Waypoint circles -->
+        <circle cx="22" cy="22" r="3" fill="#FFD700" stroke="#fff" stroke-width="1"/>
+        <circle cx="48" cy="67" r="3" fill="#FFD700" stroke="#fff" stroke-width="1"/>
+        <circle cx="72" cy="20" r="3" fill="#FFD700" stroke="#fff" stroke-width="1"/>
+      </svg>
+
+      <!-- Decorative elements -->
+      <span style="position:absolute;left:2%;top:5%;font-size:1.6rem;pointer-events:none">🌲</span>
+      <span style="position:absolute;left:32%;top:3%;font-size:1.3rem;pointer-events:none">🌿</span>
+      <span style="position:absolute;left:58%;top:5%;font-size:1.5rem;pointer-events:none">🌲</span>
+      <span style="position:absolute;right:4%;top:3%;font-size:1.3rem;pointer-events:none">🌿</span>
+
+      <!-- Moving character -->
+      <img id="rescue-char-img" class="rescue-char-img" src="" alt="" style="left:5%;top:78%">
+
+      <!-- Animal cards scattered — injected by JS -->
+      <div id="rescue-animals-layer"></div>
+
+      <!-- Cage at end of path -->
+      <div class="rescue-cage" id="rescue-cage" style="left:91%;top:63%">
+        <span class="cage-lock-icon">🔒</span>
+        <div class="cage-animal-wrap" id="rescue-cage-animal">❓</div>
+        <div class="cage-bars-wrap">
+          <div class="cage-bar"></div>
+          <div class="cage-bar"></div>
+          <div class="cage-bar"></div>
+          <div class="cage-bar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress: 4 footprints light up as you advance -->
+  <div class="rescue-progress">
+    <span class="rp-paw" id="rp0">🐾</span>
+    <span class="rp-paw" id="rp1">🐾</span>
+    <span class="rp-paw" id="rp2">🐾</span>
+    <span class="rp-paw" id="rp3">🐾</span>
+  </div>
+</div>
+
+<!-- RESCUE END OVERLAY -->
+<div id="rescue-end-overlay">
+  <div class="rescue-end-box">
+    <div class="rescue-end-emoji" id="rescue-end-emoji">🎉</div>
+    <div class="rescue-end-title">YOU SAVED IT!</div>
+    <div class="rescue-end-sub" id="rescue-end-sub"></div>
+    <div class="rescue-end-btns">
+      <button onclick="restartRescue()">🔄 שוב!</button>
+      <button onclick="closeRescueEnd()">🏠 תפריט</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================
+     SCREEN 6: RIVER RESCUE
+     ============================ -->
+<div id="s-river" class="screen">
+  <div class="rescue-topbar">
+    <button class="back-btn" onclick="stopRiverAndMenu()">← חזרה</button>
+    <div class="rescue-title-bar">🌊 הצלת חיות מהנהר</div>
+  </div>
+
+  <div class="rescue-bubble" id="river-bubble" onclick="repeatRiverQ()">
+    <span id="river-bubble-text">...</span>
+    <span style="font-size:.75rem;opacity:.55"> 🔊</span>
+  </div>
+
+  <div class="river-wrap">
+    <div class="river-water"></div>
+    <div id="river-layer"></div>
+  </div>
+
+  <div class="bridge-section">
+    <div class="bridge-label">🌉 גשר ההצלה</div>
+    <div class="bridge-planks">
+      <div class="bridge-plank" id="bp0"></div>
+      <div class="bridge-plank" id="bp1"></div>
+      <div class="bridge-plank" id="bp2"></div>
+      <div class="bridge-plank" id="bp3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- RIVER END OVERLAY -->
+<div id="river-end-overlay">
+  <div class="rescue-end-box">
+    <div class="rescue-end-emoji">🌉</div>
+    <div class="rescue-end-title">הגשר הושלם!</div>
+    <div class="rescue-end-sub" id="river-end-sub"></div>
+    <div class="rescue-end-btns">
+      <button onclick="restartRiver()">🔄 שוב!</button>
+      <button onclick="closeRiverEnd()">🏠 תפריט</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================
+     SCREEN 7: DREAMY GAME
+     ============================ -->
+<div id="s-dreamy" class="screen">
+  <div class="dreamy-topbar">
+    <button class="back-btn" onclick="stopDreamyAndMenu()">← חזרה</button>
+    <div class="dreamy-title-bar">🤖 דרימי מנקה את הבית</div>
+  </div>
+
+  <div class="dreamy-bubble" id="dreamy-bubble" onclick="repeatDreamyQ()">
+    <span id="dreamy-bubble-text">...</span>
+    <span style="font-size:.75rem;opacity:.55"> 🔊</span>
+  </div>
+
+  <div class="dreamy-progress" id="dreamy-progress"></div>
+
+  <div class="house-wrap">
+    <div class="house-map" id="house-map">
+      <!-- rooms built by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- DREAMY END OVERLAY -->
+<div id="dreamy-end-overlay">
+  <div class="rescue-end-box">
+    <div class="rescue-end-emoji">🤖✨</div>
+    <div class="rescue-end-title">הבית נקי!</div>
+    <div class="rescue-end-sub" id="dreamy-end-sub"></div>
+    <div class="rescue-end-btns">
+      <button onclick="restartDreamy()">🔄 שוב!</button>
+      <button onclick="closeDreamyEnd()">🏠 תפריט</button>
+    </div>
+  </div>
+</div>
+
+<!-- PARENTS SCREEN -->
+<div id="parents-overlay">
+  <div class="parents-box">
+    <div class="parents-header">
+      <span class="parents-icon">👨‍👩‍👧</span>
+      <h2>דוח הורים</h2>
+    </div>
+
+    <div class="parents-tabs" id="parents-tabs"></div>
+
+    <div class="parents-table-wrap">
+      <table id="parents-table">
+        <thead>
+          <tr><th>חיה</th><th>אנגלית</th><th>שגיאות</th></tr>
+        </thead>
+        <tbody id="parents-tbody"></tbody>
+      </table>
+      <div id="parents-empty" style="display:none; text-align:center; padding:20px; color:#999; font-size:1.1rem;">
+        🌟 אין שגיאות עדיין!
+      </div>
+    </div>
+
+    <div class="parents-actions">
+      <button class="clear-btn" onclick="clearErrors()">🗑️ נקה הכל</button>
+      <button class="close-parents-btn" onclick="closeParents()">✕ סגור</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFETTI -->
+<div id="confetti"></div>
+
+<!-- END GAME OVERLAY -->
+<div id="end-overlay">
+  <div class="end-box">
+    <img src="Ryder.png" alt="Ryder" class="end-ryder">
+    <div class="end-stars">⭐⭐⭐⭐⭐</div>
+    <div class="end-title">WELL DONE!</div>
+    <div class="end-sub" id="end-sub"></div>
+    <div class="end-btns">
+      <button onclick="restartGame()">🔄 שוב!</button>
+      <button onclick="closeEndAndMenu()">🏠 תפריט</button>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay" onclick="closeOverlay()">
+  <div class="overlay-box" onclick="event.stopPropagation()">
+    <div id="overlay-msg"></div>
+    <button class="ok-btn" onclick="closeOverlay()">אוקיי! 👍</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   DATA
+   ============================================================ */
+const ANIMALS = [
+  { word: 'dog',       emoji: '🐕' },
+  { word: 'cat',       emoji: '🐱' },
+  { word: 'bird',      emoji: '🐦' },
+  { word: 'fish',      emoji: '🐟' },
+  { word: 'horse',     emoji: '🐴' },
+  { word: 'cow',       emoji: '🐄' },
+  { word: 'duck',      emoji: '🦆' },
+  { word: 'elephant',  emoji: '🐘' },
+  { word: 'lion',      emoji: '🦁' },
+  { word: 'rabbit',    emoji: '🐰' },
+  { word: 'frog',      emoji: '🐸' },
+  { word: 'butterfly', emoji: '🦋' }
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const S = {
+  name:   '',
+  char:   '',
+  score:  0,
+  answer: null,
+  locked: false
+};
+
+/* ============================================================
+   SCREEN NAVIGATION
+   ============================================================ */
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ============================================================
+   SPEECH  (Web Speech API)
+   ============================================================ */
+var _voices = [];
+var _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+function _loadVoices() {
+  _voices = window.speechSynthesis.getVoices();
+}
+window.speechSynthesis.onvoiceschanged = _loadVoices;
+_loadVoices();
+
+function toSpeakText(text) { return text; }
+
+// קולות גבריים שיש להימנע מהם
+var MALE_NAMES = ['david','mark','james','guy','george','richard','eric','thomas','daniel','paul','fred','ryan','bruce','lee','avri','rami'];
+// שמות קולות נשיים לפי סדר עדיפות
+var FEMALE_EN = ['zira','aria','ava','samantha','karen','victoria','allison','susan','jenny','michelle','moira','hazel','cortana','google us english'];
+var FEMALE_HE = ['hila','carmit'];
+
+function pickFemaleVoice(lang) {
+  _voices = window.speechSynthesis.getVoices();
+  var isHe = lang.startsWith('he');
+
+  // עברית: נסה גם 'he' וגם 'iw' (קוד ישן של Chrome)
+  var langVoices;
+  if (isHe) {
+    langVoices = _voices.filter(function(v) {
+      return v.lang.startsWith('he') || v.lang.startsWith('iw');
+    });
+    console.log('Hebrew voices found:', langVoices.map(function(v){ return v.name+'/'+v.lang; }));
+    console.log('All voices:', _voices.map(function(v){ return v.name+'/'+v.lang; }).join(' | '));
+  } else {
+    langVoices = _voices.filter(function(v) { return v.lang.startsWith('en'); });
+  }
+
+  if (langVoices.length === 0) return null;
+
+  // 1. חפש קול נשי לפי שם
+  var preferred = isHe ? FEMALE_HE : FEMALE_EN;
+  for (var i = 0; i < preferred.length; i++) {
+    var kw = preferred[i];
+    var found = langVoices.find(function(v) { return v.name.toLowerCase().includes(kw); });
+    if (found) return found;
+  }
+
+  // 2. הוצא קולות גבריים ידועים — קח את הראשון שנשאר
+  var nonMale = langVoices.filter(function(v) {
+    var n = v.name.toLowerCase();
+    return !MALE_NAMES.some(function(m) { return n.includes(m); });
+  });
+  if (nonMale.length > 0) return nonMale[0];
+
+  // 3. אחרון — כל קול באותה שפה
+  return langVoices[0];
+}
+
+function speakHebrewFallback(text, onDone) {
+  // Google Translate TTS — works on HTTPS when no native Hebrew voice exists
+  var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=he&client=tw-ob&q=' + encodeURIComponent(text);
+  var audio = new Audio(url);
+  audio.volume = 1;
+  if (onDone) {
+    var done = false;
+    var safeDone = function() { if (done) return; done = true; setTimeout(onDone, 400); };
+    var safetyMs = Math.max(5000, text.length * 120);
+    var safetyTimer = setTimeout(safeDone, safetyMs);
+    audio.onended = function() { clearTimeout(safetyTimer); safeDone(); };
+    audio.onerror = function() { clearTimeout(safetyTimer); safeDone(); };
+  }
+  audio.play().catch(function() { if (onDone) setTimeout(onDone, 400); });
+}
+
+function speak(text, lang, onDone) {
+  lang = lang || 'en-US';
+  var isHe = lang.startsWith('he');
+
+  if (_voices.length === 0) _voices = window.speechSynthesis.getVoices();
+
+  // Hebrew: check for native voice first; fall back to Google TTS
+  if (isHe) {
+    var nativeVoice = pickFemaleVoice(lang);
+    if (!nativeVoice) {
+      window.speechSynthesis.cancel();
+      speakHebrewFallback(text, onDone);
+      return;
+    }
+  }
+
+  window.speechSynthesis.cancel();
+
+  setTimeout(function() {
+    var u = new SpeechSynthesisUtterance(text);
+    u.volume = 1;
+    u.rate   = isHe ? 1.0 : 0.88;
+    u.pitch  = 1.1;
+    u.lang   = lang;
+
+    var femaleVoice = pickFemaleVoice(lang);
+    if (femaleVoice) u.voice = femaleVoice;
+
+    if (onDone) {
+      var done = false;
+      var safeDone = function() {
+        if (done) return; done = true;
+        setTimeout(onDone, 400);
+      };
+      var safetyMs = Math.max(5000, text.length * 150);
+      var safetyTimer = setTimeout(safeDone, safetyMs);
+      u.onend  = function() { clearTimeout(safetyTimer); safeDone(); };
+      u.onerror = function() { clearTimeout(safetyTimer); safeDone(); };
+    }
+
+    window.speechSynthesis.speak(u);
+  }, 180);
+}
+
+/* ============================================================
+   SOUND  (Web Audio API — gentle chime)
+   ============================================================ */
+function chime() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [[523.25, 0], [659.25, 0.15], [783.99, 0.30]].forEach(function(pair) {
+      const freq = pair[0], delay = pair[1];
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      const t = ctx.currentTime + delay;
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.22, t + 0.05);
+      gain.gain.linearRampToValueAtTime(0,    t + 0.38);
+      osc.start(t);
+      osc.stop(t + 0.42);
+    });
+  } catch(e) { /* silence */ }
+}
+
+/* ============================================================
+   CONFETTI
+   ============================================================ */
+function showConfetti() {
+  var colors = ['#FFD700','#FF6B9D','#87CEEB','#98FB98','#DDA0DD','#FF8C00','#7FDBFF'];
+  var box = document.getElementById('confetti');
+  for (var i = 0; i < 70; i++) {
+    (function() {
+      var el   = document.createElement('div');
+      var size = 6 + Math.random() * 10;
+      el.className = 'cp';
+      el.style.left              = (Math.random() * 100) + 'vw';
+      el.style.background        = colors[Math.floor(Math.random() * colors.length)];
+      el.style.animationDuration = (1.3 + Math.random() * 2) + 's';
+      el.style.animationDelay    = (Math.random() * 0.7) + 's';
+      el.style.width             = size + 'px';
+      el.style.height            = size + 'px';
+      el.style.borderRadius      = (Math.random() > 0.5) ? '50%' : '3px';
+      box.appendChild(el);
+      setTimeout(function() { el.remove(); }, 4200);
+    })();
+  }
+}
+
+/* ============================================================
+   OVERLAY
+   ============================================================ */
+function showOverlay(html, speakText) {
+  document.getElementById('overlay-msg').innerHTML = html;
+  document.getElementById('overlay').classList.add('show');
+  if (speakText) speak(speakText, 'he-IL');
+}
+function closeOverlay() {
+  document.getElementById('overlay').classList.remove('show');
+  window.speechSynthesis.cancel();
+}
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+// פותח את מנוע הקול בלחיצה הראשונה של המשתמש
+var _speechUnlocked = false;
+function unlockSpeech() {
+  if (_speechUnlocked) return;
+  _speechUnlocked = true;
+  console.log('unlockSpeech called');
+  var u = new SpeechSynthesisUtterance(' ');
+  u.volume = 0;
+  window.speechSynthesis.speak(u);
+}
+
+function selectName(btn, name) {
+  unlockSpeech();
+  S.name = name;
+  document.querySelectorAll('.name-btn').forEach(function(b) { b.classList.remove('sel'); });
+  btn.classList.add('sel');
+  document.getElementById('char-section').style.display = 'block';
+  setTimeout(function() {
+    speak('שלום ' + name + '! בחרי את הדמות שלך', 'he-IL');
+  }, 400);
+}
+
+var charNames = {
+  marshall: 'מרשל',
+  rocky:    'רוקי',
+  rubble:   'רובל',
+  skye:     'סקיי',
+  chase:    'צ\'ייס',
+  zuma:     'זומה'
+};
+
+function selectChar(el, char) {
+  S.char = char;
+  document.querySelectorAll('.char-card').forEach(function(c) { c.classList.remove('sel'); });
+  el.classList.add('sel');
+  document.getElementById('go-btn').style.display = 'inline-block';
+  speak('בחרת את ' + charNames[char] + '! קדימה למשימה!', 'he-IL');
+}
+
+var welcomeMsg = '';
+
+var charImages = {
+  marshall: 'Marchell.png',
+  rocky:    'Rocky.png',
+  rubble:   'Rubbel.png',
+  skye:     'Sky.png',
+  chase:    'Chase.png',
+  zuma:     'Zuma.png'
+};
+
+function playBark(onDone) {
+  try {
+    window.speechSynthesis.cancel();
+
+    // נתן לדפדפן לבחור קול — עובד בכל מקום כולל Netlify
+
+    // הפעל אנימציית קפיצה על הדמות
+    var charImg = document.getElementById('welcome-char-img');
+    if (charImg) charImg.classList.add('barking');
+
+    function makeWoof(onEnd) {
+      var u = new SpeechSynthesisUtterance('woof woof');
+      u.lang   = 'en-US';
+      u.rate   = 2.0;   // מהיר = צפוף
+      u.pitch  = 2.0;   // גבוה מקסימלי
+      u.volume = 1;
+      return u;
+    }
+
+    // 2 נביחות צפופות — עם safety timer לכל נביחה
+    var barkDone = false;
+    function finishBark() {
+      if (barkDone) return;
+      barkDone = true;
+      if (charImg) charImg.classList.remove('barking');
+      if (onDone) setTimeout(onDone, 200);
+    }
+
+    var w1 = makeWoof();
+    var bark1Safety = setTimeout(function() {
+      // אם onend לא הגיע — עבור לנביחה שנייה
+      doWoof2();
+    }, 1400);
+    w1.onend = function() { clearTimeout(bark1Safety); doWoof2(); };
+    window.speechSynthesis.speak(w1);
+
+    function doWoof2() {
+      setTimeout(function() {
+        var w2 = makeWoof();
+        var bark2Safety = setTimeout(finishBark, 1400);
+        w2.onend = function() { clearTimeout(bark2Safety); finishBark(); };
+        window.speechSynthesis.speak(w2);
+      }, 80);
+    }
+
+  } catch(e) {
+    if (onDone) setTimeout(onDone, 900);
+  }
+}
+
+function goToWelcome() {
+  show('s-welcome');
+  welcomeMsg = S.name + '! כל כך שמח לראות אותך! אני ריידר, ואנחנו הולכים לצאת למשימת חילוץ! מוכנה?';
+  document.getElementById('welcome-text').textContent = welcomeMsg;
+
+  // הצג את הדמות הנבחרת
+  var charImg = document.getElementById('welcome-char-img');
+  charImg.src = charImages[S.char] || '';
+  charImg.alt = S.char;
+
+  // קודם שתי נביחות — אחר כך ריידר מדבר
+  setTimeout(function() {
+    playBark(function() {
+      setTimeout(speakWelcome, 300);
+    });
+  }, 500);
+}
+
+function speakWelcome() {
+  speak(welcomeMsg, 'he-IL');
+}
+
+/* ============================================================
+   MENU
+   ============================================================ */
+function goToLogin() {
+  window.speechSynthesis.cancel();
+  S.name = '';
+  S.char = '';
+  document.querySelectorAll('.name-btn').forEach(function(b) { b.classList.remove('sel'); });
+  document.querySelectorAll('.char-card').forEach(function(c) { c.classList.remove('sel'); });
+  document.getElementById('char-section').style.display = 'none';
+  document.getElementById('go-btn').style.display = 'none';
+  show('s-login');
+}
+
+function goToMenu() {
+  show('s-menu');
+  window.speechSynthesis.cancel();
+  document.getElementById('menu-player').textContent = '👤 ' + S.name;
+  setTimeout(function() {
+    if (document.getElementById('s-menu').classList.contains('active'))
+      speak('בחרי משימה, ' + S.name + '!', 'he-IL');
+  }, 400);
+}
+
+function comingSoon(name) {
+  showOverlay('המשחק של <strong>' + name + '</strong><br>יגיע בקרוב! 🚀', 'המשחק יגיע בקרוב!');
+}
+
+/* ============================================================
+   ANIMALS GAME
+   ============================================================ */
+function startAnimals() {
+  show('s-animals');
+  S.score  = 0;
+  S.locked = false;
+  updateScore();
+  speak('משחק החיות! שמעי את שם החיה, ואז לחצי על התמונה הנכונה!', 'he-IL', newRound);
+}
+
+function newRound() {
+  S.locked = false;
+
+  // Pick 3 random animals; first one is the correct answer
+  var shuffled = ANIMALS.slice().sort(function() { return Math.random() - 0.5; });
+  var options  = shuffled.slice(0, 3);
+  S.answer     = options[0];
+  options      = options.sort(function() { return Math.random() - 0.5; });
+
+  document.getElementById('q-word').textContent = S.answer.word.toUpperCase();
+  renderCards(options);
+  setTimeout(function() { speak('Find the ' + S.answer.word + '!'); }, 350);
+}
+
+function renderCards(options) {
+  var row = document.getElementById('cards-row');
+  row.innerHTML = '';
+  options.forEach(function(item) {
+    var card = document.createElement('div');
+    card.className = 'a-card';
+    card.innerHTML = '<span class="a-emoji">' + item.emoji + '</span>';
+    card.onclick = function() { checkAnswer(item, card); };
+    row.appendChild(card);
+  });
+}
+
+function onAnimalsScreen() {
+  return document.getElementById('s-animals').classList.contains('active');
+}
+
+function checkAnswer(item, card) {
+  if (S.locked) return;
+
+  if (item.word === S.answer.word) {
+    /* ---- CORRECT ---- */
+    S.locked = true;
+    card.classList.add('correct');
+    S.score++;
+    updateScore();
+    chime();
+    showConfetti();
+
+    // הסר מסגרת ירוקה אחרי 1.2 שניות — לא תלוי בדיבור
+    setTimeout(function() { card.classList.remove('correct'); }, 1200);
+
+    var art = /^[aeiou]/i.test(S.answer.word) ? 'an' : 'a';
+    var msg = 'Yes! This is ' + art + ' ' + S.answer.word + '. ' + art.charAt(0).toUpperCase() + art.slice(1) + ' ' + S.answer.word + '! Well done!';
+    setTimeout(function() {
+      if (!onAnimalsScreen()) return;
+      speak(msg, 'en-US', function() {
+        if (!onAnimalsScreen()) return;
+        if (S.score >= 5) {
+          showGameOver();
+        } else {
+          newRound();
+        }
+      });
+    }, 380);
+
+  } else {
+    /* ---- WRONG ---- */
+    card.classList.add('wrong');
+    recordError(S.name, S.answer.word);
+    var encouragements = ['נסי שוב!', 'כמעט! נסי שוב.', 'לא זה — את יכולה!'];
+    speak(encouragements[Math.floor(Math.random() * encouragements.length)], 'he-IL');
+    setTimeout(function() {
+      card.classList.remove('wrong');
+      setTimeout(function() {
+        if (!onAnimalsScreen()) return;
+        speak('Find the ' + S.answer.word + '!');
+      }, 500);
+    }, 1500);
+  }
+}
+
+function repeatQ() {
+  if (S.answer) speak('Find the ' + S.answer.word + '!');
+}
+
+function doDemo() {
+  if (S.answer) speak('Find the ' + S.answer.word + '!');
+}
+
+function showHelp() {
+  showOverlay(
+    'מרשל יגיד שם של חיה 🐾<br>לחצי על הכרטיס הנכון!<br><br>לחצי על הבועה לשמוע שוב 🔊',
+    'שמעי את שם החיה, ואז לחצי על התמונה הנכונה!'
+  );
+}
+
+function updateScore() {
+  document.getElementById('score-num').textContent = S.score;
+}
+
+/* ============================================================
+   ERROR TRACKING  (localStorage)
+   ============================================================ */
+var STORAGE_KEY = 'pawpatrol_errors';
+
+function loadErrors() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  } catch(e) { return {}; }
+}
+
+function saveErrors(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function recordError(childName, animalWord) {
+  var data = loadErrors();
+  if (!data[childName]) data[childName] = {};
+  data[childName][animalWord] = (data[childName][animalWord] || 0) + 1;
+  saveErrors(data);
+}
+
+function recordRescueError(childName, animalWord) {
+  recordError(childName, 'rescue:' + animalWord);
+}
+
+function recordDreamyError(childName, roomId) {
+  recordError(childName, 'dreamy:' + roomId);
+}
+
+/* ============================================================
+   PARENTS DASHBOARD
+   ============================================================ */
+var parentsActiveChild = '';
+
+function showParents() {
+  window.speechSynthesis.cancel();
+  var data  = loadErrors();
+  var names = ['עפרי', 'יובל'];
+  parentsActiveChild = S.name || names[0];
+
+  var tabs = document.getElementById('parents-tabs');
+  tabs.innerHTML = '';
+  names.forEach(function(n) {
+    var btn = document.createElement('button');
+    btn.className = 'tab-btn' + (n === parentsActiveChild ? ' active' : '');
+    btn.textContent = n;
+    btn.onclick = function() {
+      parentsActiveChild = n;
+      document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      renderParentsTable(data);
+    };
+    tabs.appendChild(btn);
+  });
+
+  renderParentsTable(data);
+  document.getElementById('parents-overlay').classList.add('show');
+}
+
+function renderParentsTable(data) {
+  var tbody  = document.getElementById('parents-tbody');
+  var empty  = document.getElementById('parents-empty');
+  var table  = document.getElementById('parents-table');
+  var errors = data[parentsActiveChild] || {};
+
+  // שגיאות חיות (משחק 1 + משחק 2)
+  var animalRows = ANIMALS.map(function(a) {
+    var total = (errors[a.word] || 0) + (errors['rescue:' + a.word] || 0);
+    return { emoji: a.emoji, word: a.word, count: total };
+  }).filter(function(r) { return r.count > 0; })
+    .sort(function(a, b) { return b.count - a.count; });
+
+  // שגיאות חדרים (משחק דרימי)
+  var roomRows = DREAMY_ROOMS.map(function(r) {
+    var total = errors['dreamy:' + r.id] || 0;
+    return { emoji: r.emoji, word: r.en, count: total };
+  }).filter(function(r) { return r.count > 0; })
+    .sort(function(a, b) { return b.count - a.count; });
+
+  if (animalRows.length === 0 && roomRows.length === 0) {
+    table.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  table.style.display = 'table';
+  empty.style.display = 'none';
+
+  tbody.innerHTML = '';
+
+  function addRows(rowList) {
+    rowList.forEach(function(row) {
+      var level = row.count >= 5 ? 'high' : row.count >= 3 ? '' : 'low';
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td style="font-size:1.8rem;text-align:center;">' + row.emoji + '</td>' +
+        '<td style="font-weight:bold;font-size:1.1rem;">' + row.word.charAt(0).toUpperCase() + row.word.slice(1) + '</td>' +
+        '<td style="text-align:center;"><span class="err-count ' + level + '">' + row.count + '</span></td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  if (animalRows.length > 0) {
+    var hdrA = document.createElement('tr');
+    hdrA.innerHTML = '<td colspan="3" style="font-size:.78rem;font-weight:700;color:#555;padding:6px 4px 2px;background:#f5f5f5;">🐾 חיות</td>';
+    tbody.appendChild(hdrA);
+    addRows(animalRows);
+  }
+
+  if (roomRows.length > 0) {
+    var hdrR = document.createElement('tr');
+    hdrR.innerHTML = '<td colspan="3" style="font-size:.78rem;font-weight:700;color:#555;padding:6px 4px 2px;background:#f5f5f5;">🏠 דרימי</td>';
+    tbody.appendChild(hdrR);
+    addRows(roomRows);
+  }
+}
+
+function clearErrors() {
+  var data = loadErrors();
+  data[parentsActiveChild] = {};
+  saveErrors(data);
+  renderParentsTable(data);
+}
+
+function closeParents() {
+  document.getElementById('parents-overlay').classList.remove('show');
+}
+
+/* ============================================================
+   APPLAUSE SOUND
+   ============================================================ */
+function playApplause() {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var now = ctx.currentTime;
+
+    function note(freq, startT, dur, vol, type) {
+      var osc  = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = type || 'triangle';
+      osc.frequency.value = freq;
+      var t = now + startT;
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(vol, t + 0.04);
+      gain.gain.setValueAtTime(vol, t + dur - 0.06);
+      gain.gain.linearRampToValueAtTime(0, t + dur);
+      osc.start(t);
+      osc.stop(t + dur + 0.05);
+    }
+
+    // Fanfare: C-E-G run, then triumphant C major chord × 2
+    // Run up
+    note(523.25, 0.00, 0.18, 0.38); // C5
+    note(659.25, 0.17, 0.18, 0.38); // E5
+    note(783.99, 0.34, 0.18, 0.38); // G5
+    // First chord hit
+    note(523.25, 0.52, 0.28, 0.28); // C5
+    note(659.25, 0.52, 0.28, 0.28); // E5
+    note(783.99, 0.52, 0.28, 0.28); // G5
+    note(1046.5, 0.52, 0.28, 0.32); // C6
+    // Pause then big final chord
+    note(523.25, 0.88, 0.80, 0.25); // C5
+    note(659.25, 0.88, 0.80, 0.25); // E5
+    note(783.99, 0.88, 0.80, 0.25); // G5
+    note(1046.5, 0.88, 0.90, 0.35); // C6 — rings out
+    note(1318.5, 0.92, 0.75, 0.20); // E6 — sparkle on top
+
+  } catch(e) {}
+}
+
+/* ============================================================
+   GAME OVER
+   ============================================================ */
+function showGameOver() {
+  S.locked = true;
+  document.getElementById('end-sub').textContent = S.name + ', עשית עבודה מדהימה! 🌟';
+  document.getElementById('end-overlay').classList.add('show');
+  showConfetti();
+  playApplause();
+  setTimeout(function() {
+    speak('Well done, ' + S.name + '! You are amazing!', 'en-US');
+  }, 600);
+}
+
+function restartGame() {
+  document.getElementById('end-overlay').classList.remove('show');
+  startAnimals();
+}
+
+function closeEndAndMenu() {
+  document.getElementById('end-overlay').classList.remove('show');
+  goToMenu();
+}
+
+/* ============================================================
+   RESCUE GAME — הצלת החיה הלכודה
+   ============================================================ */
+var RS = {
+  pathAnimals: [],   // 4 חיות שצריך ללחוץ בסדר
+  extras:      [],   // 2 חיות הסחת דעת
+  cageAnimal:  null, // החיה בכלוב (הפתעה)
+  step:        0,    // כמה שלבים הושלמו
+  locked:      false
+};
+
+// נקודות ציון על המסלול העקלתוני (left%, top%)
+var RS_WP = [
+  { l: '5%',  t: '78%' },   // התחלה
+  { l: '22%', t: '22%' },   // נקודה 1
+  { l: '48%', t: '67%' },   // נקודה 2
+  { l: '72%', t: '20%' },   // נקודה 3
+  { l: '88%', t: '60%' }    // ליד הכלוב
+];
+
+// מיקומים אפשריים לפיזור חיות — בוחרים 6 בכל סיבוב
+var RS_SCATTER = [
+  { l: '12%', t: '42%' }, { l: '30%', t: '80%' },
+  { l: '42%', t: '32%' }, { l: '58%', t: '78%' },
+  { l: '70%', t: '48%' }, { l: '18%', t: '10%' },
+  { l: '50%', t: '12%' }, { l: '80%', t: '32%' }
+];
+
+function startRescue() {
+  show('s-rescue');
+  RS.step   = 0;
+  RS.locked = false;
+
+  // תמונת הדמות הנבחרת — מיקום התחלתי
+  var charEl = document.getElementById('rescue-char-img');
+  charEl.src = charImages[S.char] || 'Ryder.png';
+  charEl.classList.remove('going-back');
+  charEl.style.left = RS_WP[0].l;
+  charEl.style.top  = RS_WP[0].t;
+
+  // בחר 7 חיות: 4 לנתיב, 2 הסחה, 1 לכלוב
+  var shuffled = ANIMALS.slice().sort(function() { return Math.random() - 0.5; });
+  RS.pathAnimals = shuffled.slice(0, 4);
+  RS.extras      = shuffled.slice(4, 6);
+  RS.cageAnimal  = shuffled[6];
+
+  // אפס כלוב
+  document.getElementById('rescue-cage').classList.remove('open');
+  document.getElementById('rescue-cage-animal').textContent = '❓';
+  document.querySelector('.cage-lock-icon').style.display = '';
+  document.getElementById('rescue-end-overlay').classList.remove('show');
+  updateRescueProgress();
+
+  var charHeb = charNames[S.char] || 'הדמות';
+  speak('עזרי ל' + charHeb + ' לחלץ את החיה הלכודה! מצאי את הדמות הנכונה על המפה!', 'he-IL', function() {
+    rescueRound();
+  });
+}
+
+function rescueRound() {
+  if (!onRescueScreen()) return;
+  RS.locked = false;
+  renderRescueAnimals();
+  var word = RS.pathAnimals[RS.step].word;
+  document.getElementById('rescue-bubble-text').textContent = 'Find the ' + word + '!';
+  speak('Find the ' + word + '!', 'en-US');
+}
+
+function renderRescueAnimals() {
+  var layer = document.getElementById('rescue-animals-layer');
+  layer.innerHTML = '';
+  // ערבב מיקומים בכל סיבוב — זה יוצר תחושת מבוך
+  var positions = RS_SCATTER.slice().sort(function() { return Math.random() - 0.5; });
+  var allAnimals = RS.pathAnimals.concat(RS.extras);
+
+  allAnimals.forEach(function(animal, i) {
+    var pos = positions[i];
+    var card = document.createElement('div');
+    card.className = 'rescue-card';
+    card.style.left = pos.l;
+    card.style.top  = pos.t;
+    card.innerHTML  = '<span class="rc-emoji">' + animal.emoji + '</span>'
+                    + '<span class="rc-word">'  + animal.word  + '</span>';
+    card.onclick = (function(a, el) {
+      return function() { checkRescueAnswer(a, el); };
+    })(animal, card);
+    layer.appendChild(card);
+  });
+}
+
+function checkRescueAnswer(animal, card) {
+  if (RS.locked) return;
+  if (!onRescueScreen()) return;
+
+  if (animal.word === RS.pathAnimals[RS.step].word) {
+    /* ---- נכון ---- */
+    RS.locked = true;
+    card.classList.add('rc-correct');
+    chime();
+
+    setTimeout(function() {
+      var charEl = document.getElementById('rescue-char-img');
+      charEl.classList.remove('going-back');
+      RS.step++;
+      charEl.style.left = RS_WP[RS.step].l;
+      charEl.style.top  = RS_WP[RS.step].t;
+      updateRescueProgress();
+
+      if (RS.step >= 4) {
+        setTimeout(openRescueCage, 950);
+      } else {
+        setTimeout(rescueRound, 850);
+      }
+    }, 500);
+
+  } else {
+    /* ---- שגוי — שלב אחד אחורה ---- */
+    RS.locked = true;
+    card.classList.add('rc-wrong');
+    recordRescueError(S.name, RS.pathAnimals[RS.step].word);
+    speak('אוי! צעד אחד אחורה!', 'he-IL');
+
+    setTimeout(function() {
+      var charEl = document.getElementById('rescue-char-img');
+      charEl.classList.add('going-back');
+      var prevStep = Math.max(0, RS.step - 1);
+      charEl.style.left = RS_WP[prevStep].l;
+      charEl.style.top  = RS_WP[prevStep].t;
+      RS.step = prevStep;
+      updateRescueProgress();
+
+      setTimeout(function() {
+        charEl.classList.remove('going-back');
+        rescueRound();
+      }, 1000);
+    }, 800);
+  }
+}
+
+function updateRescueProgress() {
+  for (var i = 0; i < 4; i++) {
+    var el = document.getElementById('rp' + i);
+    if (el) el.classList.toggle('done', i < RS.step);
+  }
+}
+
+function openRescueCage() {
+  if (!onRescueScreen()) return;
+  var charEl = document.getElementById('rescue-char-img');
+  charEl.classList.remove('going-back');
+  charEl.style.left = RS_WP[4].l;
+  charEl.style.top  = RS_WP[4].t;
+
+  document.querySelector('.cage-lock-icon').style.display = 'none';
+  document.getElementById('rescue-cage-animal').textContent = RS.cageAnimal.emoji;
+  document.getElementById('rescue-cage').classList.add('open');
+
+  showConfetti();
+  playApplause();
+
+  var charHeb = charNames[S.char] || 'הדמות';
+  setTimeout(function() {
+    speak('כל הכבוד! עזרת ל' + charHeb + ' לחלץ ' + RS.cageAnimal.word + '!', 'he-IL', function() {
+      speak('YOU SAVED THE ' + RS.cageAnimal.word.toUpperCase() + '!', 'en-US', function() {
+        showRescueEndOverlay();
+      });
+    });
+  }, 700);
+}
+
+function showRescueEndOverlay() {
+  document.getElementById('rescue-end-emoji').textContent = RS.cageAnimal.emoji;
+  document.getElementById('rescue-end-sub').innerHTML =
+    'YOU SAVED THE <strong>' + RS.cageAnimal.word.toUpperCase() + '</strong>! 🎉';
+  document.getElementById('rescue-end-overlay').classList.add('show');
+}
+
+function repeatRescueQ() {
+  if (RS.step < 4 && RS.pathAnimals[RS.step]) {
+    speak('Find the ' + RS.pathAnimals[RS.step].word + '!', 'en-US');
+  }
+}
+
+function restartRescue() {
+  document.getElementById('rescue-end-overlay').classList.remove('show');
+  startRescue();
+}
+
+function closeRescueEnd() {
+  document.getElementById('rescue-end-overlay').classList.remove('show');
+  goToMenu();
+}
+
+function onRescueScreen() {
+  return document.getElementById('s-rescue').classList.contains('active');
+}
+
+/* ============================================================
+   RIVER RESCUE — הצלת חיות מהנהר
+   ============================================================ */
+var RV = {
+  targets:  [],    // 4 חיות להצלה
+  step:     0,     // שלב נוכחי
+  bridge:   0,     // כמה חלקי גשר נבנו
+  locked:   false,
+  spawnInt: null   // interval לניב חיות נוספות
+};
+
+function startRiver() {
+  show('s-river');
+  RV.step   = 0;
+  RV.bridge = 0;
+  RV.locked = false;
+  clearRiverIntervals();
+
+  // אפס גשר
+  for (var i = 0; i < 4; i++) {
+    var bp = document.getElementById('bp' + i);
+    if (bp) bp.classList.remove('built');
+  }
+  document.getElementById('river-layer').innerHTML = '';
+  document.getElementById('river-end-overlay').classList.remove('show');
+
+  // בחר 4 חיות יעד
+  var shuffled = ANIMALS.slice().sort(function() { return Math.random() - 0.5; });
+  RV.targets = shuffled.slice(0, 4);
+
+  speak('עזרי לחלץ את החיות מהנהר! הן נסחפות! לחצי על החיה שצריך להציל לפני שנעלמת!', 'he-IL', function() {
+    riverRound();
+  });
+}
+
+function riverRound() {
+  if (!onRiverScreen()) return;
+  RV.locked = false;
+
+  // נקה חיות ישנות
+  document.getElementById('river-layer').innerHTML = '';
+  clearRiverIntervals();
+
+  var target = RV.targets[RV.step];
+  var text   = 'Save the ' + target.word + '!';
+  document.getElementById('river-bubble-text').textContent = text;
+  speak(text, 'en-US');
+
+  // שגר יעד + הסחות דעת
+  setTimeout(function() { spawnRiverAnimal(target, true, 6 + Math.random() * 2); }, 300);
+  spawnRiverDistractors(target);
+
+  // שגר עוד חיות כל 2.8 שניות
+  RV.spawnInt = setInterval(function() {
+    if (!onRiverScreen() || RV.locked) return;
+    var others = ANIMALS.filter(function(a) { return a.word !== target.word; });
+    var pick   = others[Math.floor(Math.random() * others.length)];
+    spawnRiverAnimal(pick, false, 5 + Math.random() * 3);
+  }, 2800);
+}
+
+function spawnRiverAnimal(animal, isTarget, duration) {
+  if (!onRiverScreen()) return null;
+  var layer = document.getElementById('river-layer');
+  var card  = document.createElement('div');
+  card.className = 'river-card';
+  card.style.top             = (18 + Math.random() * 60) + '%';
+  card.style.animationDuration = (duration || 6) + 's';
+  card.innerHTML = '<span class="rc-emoji">' + animal.emoji + '</span>'
+                 + '<span class="rc-word">'  + animal.word  + '</span>';
+
+  // אם היעד נעלם — מגיע שוב
+  card.addEventListener('animationend', function() {
+    card.remove();
+    if (isTarget && !RV.locked && onRiverScreen()) {
+      setTimeout(function() {
+        if (!RV.locked && onRiverScreen()) spawnRiverAnimal(animal, true, 6 + Math.random() * 2);
+      }, 600);
+    }
+  });
+
+  card.onclick = (function(a, el) {
+    return function() { checkRiverAnswer(a, el); };
+  })(animal, card);
+
+  layer.appendChild(card);
+  return card;
+}
+
+function spawnRiverDistractors(target) {
+  var others = ANIMALS.filter(function(a) { return a.word !== target.word; })
+                      .sort(function() { return Math.random() - 0.5; })
+                      .slice(0, 3);
+  others.forEach(function(a, i) {
+    setTimeout(function() {
+      if (!RV.locked && onRiverScreen()) spawnRiverAnimal(a, false, 5 + Math.random() * 3);
+    }, 800 + i * 700);
+  });
+}
+
+function checkRiverAnswer(animal, card) {
+  if (RV.locked) return;
+  if (!onRiverScreen()) return;
+
+  var target = RV.targets[RV.step];
+
+  if (animal.word === target.word) {
+    /* ---- נכון: הצלה! ---- */
+    RV.locked = true;
+    clearRiverIntervals();
+    card.classList.remove('rv-target');
+    card.classList.add('rv-correct');
+    chime();
+
+    setTimeout(function() {
+      // בנה חלק גשר
+      var bp = document.getElementById('bp' + RV.bridge);
+      if (bp) bp.classList.add('built');
+      RV.bridge++;
+      RV.step++;
+
+      if (RV.bridge >= 4) {
+        setTimeout(showRiverEnd, 800);
+      } else {
+        setTimeout(riverRound, 1000);
+      }
+    }, 550);
+
+  } else {
+    /* ---- שגוי: אדום + נידנוד ---- */
+    card.style.borderColor = '#e74c3c';
+    card.style.background  = 'rgba(253,235,234,.94)';
+    var shakes = ['-9px','9px','-6px','6px','0px'];
+    shakes.forEach(function(x, i) {
+      setTimeout(function() {
+        card.style.transform = 'translate(' + x + ', -50%)';
+      }, i * 75);
+    });
+    setTimeout(function() {
+      card.style.borderColor = '';
+      card.style.background  = '';
+      card.style.transform   = 'translateY(-50%)';
+    }, shakes.length * 75 + 150);
+  }
+}
+
+function clearRiverIntervals() {
+  if (RV.spawnInt) { clearInterval(RV.spawnInt); RV.spawnInt = null; }
+}
+
+function showRiverEnd() {
+  clearRiverIntervals();
+  showConfetti();
+  playApplause();
+  document.getElementById('river-end-sub').textContent = S.name + ' הצילה את כל החיות! 🎉';
+  document.getElementById('river-end-overlay').classList.add('show');
+  // המתן לסיום הפאנפארה לפני הדיבור
+  setTimeout(function() {
+    speak('כל הכבוד! הצלת את כל החיות!', 'he-IL', function() {
+      speak('הגשר הושלם!', 'he-IL', function() {
+        speak('The bridge is complete! You are amazing!', 'en-US');
+      });
+    });
+  }, 1800);
+}
+
+function repeatRiverQ() {
+  if (RV.step < 4 && RV.targets[RV.step]) speak('Save the ' + RV.targets[RV.step].word + '!', 'en-US');
+}
+
+function restartRiver() {
+  document.getElementById('river-end-overlay').classList.remove('show');
+  startRiver();
+}
+
+function closeRiverEnd() {
+  clearRiverIntervals();
+  document.getElementById('river-end-overlay').classList.remove('show');
+  goToMenu();
+}
+
+function stopRiverAndMenu() {
+  clearRiverIntervals();
+  document.getElementById('river-layer').innerHTML = '';
+  goToMenu();
+}
+
+function onRiverScreen() {
+  return document.getElementById('s-river').classList.contains('active');
+}
+
+/* ============================================================
+   SCREEN 7 — DREAMY ROBOT CLEANER
+   House layout (CSS grid):
+     Row1(1.8fr): balcony | shower  | toilet
+     Row2(2.7fr): living  | living  | bedroom
+     Row3(2.5fr): dining  | kids    | bedroom
+     Row4(3fr):   kitchen | kitchen | kitchen
+   Room centres (cx%, cy% of map):
+     kitchen 50,85 | living 35,31.5 | bedroom 85,44
+     kids 52.5,57.5| dining 17.5,57.5| shower 52.5,9
+     toilet 85,9   | balcony 17.5,9
+   ============================================================ */
+var DREAMY_ROOMS = [
+  { id:'kitchen',  en:'kitchen',     he:'מטבח',       emoji:'🍳', mess:['🍕','🥤','🍜','🥄'],        cx:50,   cy:85   },
+  { id:'living',   en:'living room', he:'סלון',        emoji:'📺', mess:['📦','👕','🧦','🎈'],         cx:35,   cy:31.5 },
+  { id:'bedroom',  en:'bedroom',     he:'חדר שינה',    emoji:'🛏️', mess:['👗','🧸','👟','🧢'],         cx:85,   cy:44   },
+  { id:'kids',     en:'kids room',   he:'חדר ילדים',   emoji:'🧸', mess:['🎮','🖍️','⚽','🪀'],         cx:52.5, cy:57.5 },
+  { id:'dining',   en:'dining room', he:'פינת אוכל',   emoji:'🪑', mess:['🍽️','🥤','🧃','🍞'],         cx:17.5, cy:57.5 },
+  { id:'shower',   en:'shower room', he:'מקלחת',       emoji:'🚿', mess:['🧼','🪥','🧴'],              cx:52.5, cy:9    },
+  { id:'toilet',   en:'toilet',      he:'שירותים',     emoji:'🚽', mess:['🧻','🧴','🪣'],              cx:85,   cy:9    },
+  { id:'balcony',  en:'balcony',     he:'מרפסת',       emoji:'🌿', mess:['👟','📦','🪴','🌂'],         cx:17.5, cy:9    }
+];
+
+var DM = { step:0, targets:[], locked:false, moving:false };
+
+function onDreamyScreen() {
+  return document.getElementById('s-dreamy').classList.contains('active');
+}
+
+/* Build the house map rooms and Dreamy bot from scratch */
+function buildHouseMap() {
+  var map = document.getElementById('house-map');
+  map.innerHTML = '';
+
+  DREAMY_ROOMS.forEach(function(r) {
+    var div = document.createElement('div');
+    div.className = 'h-room';
+    div.dataset.room = r.id;
+
+    /* Mess decoration */
+    var messDiv = document.createElement('div');
+    messDiv.className = 'room-mess';
+    r.mess.forEach(function(m) {
+      var s = document.createElement('span'); s.textContent = m;
+      messDiv.appendChild(s);
+    });
+
+    /* Clean sparkle (hidden until cleaned) */
+    var cleanMark = document.createElement('div');
+    cleanMark.className = 'room-clean-mark';
+    cleanMark.textContent = '✨';
+
+    /* Room emoji */
+    var emojiEl = document.createElement('div');
+    emojiEl.className = 'room-emoji-top';
+    emojiEl.textContent = r.emoji;
+
+    /* Room label */
+    var label = document.createElement('div');
+    label.className = 'room-label';
+    label.innerHTML = '<span class="r-en">' + r.en + '</span>' + r.he;
+
+    div.appendChild(messDiv);
+    div.appendChild(cleanMark);
+    div.appendChild(emojiEl);
+    div.appendChild(label);
+
+    div.onclick = (function(room){ return function(){ checkDreamyAnswer(room); }; })(r);
+    map.appendChild(div);
+  });
+
+  /* Dreamy bot (absolutely positioned inside map) */
+  var bot = document.createElement('div');
+  bot.id = 'dreamy-bot';
+  bot.className = 'dreamy-bot';
+  bot.textContent = '🤖';
+  map.appendChild(bot);
+
+  /* Progress dots */
+  var prog = document.getElementById('dreamy-progress');
+  prog.innerHTML = '';
+  DREAMY_ROOMS.forEach(function(_, i) {
+    var dot = document.createElement('div');
+    dot.className = 'dreamy-dot';
+    dot.id = 'ddot-' + i;
+    prog.appendChild(dot);
+  });
+}
+
+/* Place Dreamy at percentage coordinates inside house-map */
+function placeDreamy(cx, cy, animate) {
+  var bot = document.getElementById('dreamy-bot');
+  if (!bot) return;
+  if (!animate) {
+    bot.style.transition = 'none';
+    bot.style.left = cx + '%';
+    bot.style.top  = cy + '%';
+    bot.getBoundingClientRect(); /* force reflow before re-enabling */
+    bot.style.transition = '';
+  } else {
+    bot.style.left = cx + '%';
+    bot.style.top  = cy + '%';
+  }
+}
+
+function startDreamy() {
+  DM.step    = 0;
+  DM.locked  = false;
+  DM.moving  = false;
+  /* Shuffle all 8 rooms */
+  DM.targets = DREAMY_ROOMS.slice().sort(function(){ return Math.random() - .5; });
+
+  buildHouseMap();
+  /* Start in kitchen */
+  placeDreamy(50, 85, false);
+
+  show('s-dreamy');
+
+  /* Intro then first round */
+  setTimeout(function() {
+    if (!onDreamyScreen()) return;
+    speak('דרימי השואב הרובוטי התבלבל! עזרי לו לנקות את הבית!', 'he-IL', function() {
+      if (!onDreamyScreen()) return;
+      dreamyRound();
+    });
+  }, 400);
+}
+
+function dreamyRound() {
+  if (!onDreamyScreen() || DM.step >= DM.targets.length) return;
+  DM.locked = false;
+  DM.moving = false;
+  var target = DM.targets[DM.step];
+  var text   = 'OK Dreamy! Go to the ' + target.en + '!';
+  document.getElementById('dreamy-bubble-text').textContent = text;
+
+  /* Spin while waiting for answer */
+  var bot = document.getElementById('dreamy-bot');
+  if (bot) bot.classList.add('spinning');
+
+  speak(text, 'en-US');
+}
+
+function checkDreamyAnswer(room) {
+  if (DM.locked || DM.moving) return;
+  if (!onDreamyScreen()) return;
+
+  var target = DM.targets[DM.step];
+  var roomEl = document.querySelector('.h-room[data-room="' + room.id + '"]');
+
+  if (room.id === target.id) {
+    /* ---- נכון: הזז ונקה ---- */
+    DM.locked = true;
+    DM.moving = true;
+    var bot = document.getElementById('dreamy-bot');
+    if (bot) bot.classList.remove('spinning');
+
+    /* Move Dreamy to room centre */
+    placeDreamy(target.cx, target.cy, true);
+    chime();
+
+    setTimeout(function() {
+      /* Clean the room */
+      if (roomEl) roomEl.classList.add('room-clean');
+      /* Tick progress dot */
+      var dot = document.getElementById('ddot-' + DM.step);
+      if (dot) dot.classList.add('done');
+      DM.step++;
+      DM.moving = false;
+
+      if (DM.step >= DM.targets.length) {
+        setTimeout(showDreamyEnd, 700);
+      } else {
+        setTimeout(dreamyRound, 900);
+      }
+    }, 1200);
+
+  } else {
+    /* ---- שגוי: אדום + נידנוד ---- */
+    if (!roomEl) return;
+    recordDreamyError(S.name, room.id);
+    roomEl.style.borderColor  = '#e74c3c';
+    roomEl.style.background   = 'rgba(253,235,234,.9)';
+    var shakes = ['-8px','8px','-5px','5px','0px'];
+    shakes.forEach(function(x, i) {
+      setTimeout(function() {
+        if (roomEl) roomEl.style.transform = 'translateX(' + x + ')';
+      }, i * 70);
+    });
+    setTimeout(function() {
+      if (roomEl) {
+        roomEl.style.borderColor = '';
+        roomEl.style.background  = '';
+        roomEl.style.transform   = '';
+      }
+    }, shakes.length * 70 + 150);
+  }
+}
+
+function showDreamyEnd() {
+  showConfetti();
+  playApplause();
+  document.getElementById('dreamy-end-sub').textContent = S.name + ' ניקתה את כל הבית! 🌟';
+  document.getElementById('dreamy-end-overlay').classList.add('show');
+  setTimeout(function() {
+    speak('כל הכבוד!', 'he-IL', function() {
+      speak('The house is clean! Amazing job, ' + S.name + '!', 'en-US');
+    });
+  }, 1800);
+}
+
+function restartDreamy() {
+  document.getElementById('dreamy-end-overlay').classList.remove('show');
+  startDreamy();
+}
+
+function closeDreamyEnd() {
+  document.getElementById('dreamy-end-overlay').classList.remove('show');
+  goToMenu();
+}
+
+function stopDreamyAndMenu() {
+  window.speechSynthesis.cancel();
+  goToMenu();
+}
+
+function repeatDreamyQ() {
+  if (DM.step < DM.targets.length) {
+    speak('OK Dreamy! Go to the ' + DM.targets[DM.step].en + '!', 'en-US');
+  }
+}
+
+// Voices load lazily on Chrome — onvoiceschanged already set to _loadVoices above
+</script>
+</body>
+</html>
