@@ -1634,6 +1634,7 @@ const S = {
    SCREEN NAVIGATION
    ============================================================ */
 function show(id) {
+  stopAllSpeech();
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
@@ -1642,6 +1643,16 @@ function show(id) {
    SPEECH  (Web Speech API)
    ============================================================ */
 var _voices = [];
+var _currentAudio = null;
+
+function stopAllSpeech() {
+  window.speechSynthesis.cancel();
+  if (_currentAudio) {
+    _currentAudio.pause();
+    _currentAudio.currentTime = 0;
+    _currentAudio = null;
+  }
+}
 var _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
 function _loadVoices() {
@@ -1696,24 +1707,28 @@ function pickFemaleVoice(lang) {
 }
 
 function playHebrew(file, onDone) {
+  stopAllSpeech();
   var audio = new Audio('audio/' + file);
+  _currentAudio = audio;
   audio.volume = 1;
   if (onDone) {
     var done = false;
-    var safeDone = function() { if (done) return; done = true; setTimeout(onDone, 300); };
+    var safeDone = function() { if (done) return; done = true; _currentAudio = null; setTimeout(onDone, 300); };
     var safetyMs = 12000;
     var safetyTimer = setTimeout(safeDone, safetyMs);
     audio.onended = function() { clearTimeout(safetyTimer); safeDone(); };
     audio.onerror = function() { clearTimeout(safetyTimer); safeDone(); };
+  } else {
+    audio.onended = function() { _currentAudio = null; };
   }
-  audio.play().catch(function() { if (onDone) setTimeout(onDone, 300); });
+  audio.play().catch(function() { _currentAudio = null; if (onDone) setTimeout(onDone, 300); });
 }
 
 function speak(text, lang, onDone) {
   lang = lang || 'en-US';
 
   if (_voices.length === 0) _voices = window.speechSynthesis.getVoices();
-  window.speechSynthesis.cancel();
+  stopAllSpeech();
 
   setTimeout(function() {
     var u = new SpeechSynthesisUtterance(text);
@@ -1799,7 +1814,7 @@ function showOverlay(html, audioFile) {
 }
 function closeOverlay() {
   document.getElementById('overlay').classList.remove('show');
-  window.speechSynthesis.cancel();
+  stopAllSpeech();
 }
 
 /* ============================================================
@@ -1858,7 +1873,7 @@ var charImages = {
 
 function playBark(onDone) {
   try {
-    window.speechSynthesis.cancel();
+    stopAllSpeech();
 
     // נתן לדפדפן לבחור קול — עובד בכל מקום כולל Netlify
 
@@ -1932,7 +1947,7 @@ function speakWelcome() {
    MENU
    ============================================================ */
 function goToLogin() {
-  window.speechSynthesis.cancel();
+  stopAllSpeech();
   S.name = '';
   S.char = '';
   document.querySelectorAll('.name-btn').forEach(function(b) { b.classList.remove('sel'); });
@@ -1944,7 +1959,6 @@ function goToLogin() {
 
 function goToMenu() {
   show('s-menu');
-  window.speechSynthesis.cancel();
   document.getElementById('menu-player').textContent = '👤 ' + S.name;
   setTimeout(function() {
     if (document.getElementById('s-menu').classList.contains('active'))
@@ -2097,7 +2111,7 @@ function recordDreamyError(childName, roomId) {
 var parentsActiveChild = '';
 
 function showParents() {
-  window.speechSynthesis.cancel();
+  stopAllSpeech();
   var data  = loadErrors();
   var names = ['עפרי', 'יובל'];
   parentsActiveChild = S.name || names[0];
@@ -2883,7 +2897,7 @@ function closeDreamyEnd() {
 }
 
 function stopDreamyAndMenu() {
-  window.speechSynthesis.cancel();
+  stopAllSpeech();
   goToMenu();
 }
 
